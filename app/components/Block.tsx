@@ -1,7 +1,7 @@
-import React, { useState } from "react"
+import React from "react"
 import { Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 
-import { Item } from "../screens"
+import { Item } from "../common/types/types"
 
 
 export const Block = ({ item, onPress }: { item: Item, onPress: any }) => {

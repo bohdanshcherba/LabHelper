@@ -1,5 +1,5 @@
 enum StorageKey {
-  TOKEN = 'token',
+  GORAYEV_ITEMS = "app-lab-helper/load-gorayev-items",
 }
 
-export { StorageKey };
+export { StorageKey }

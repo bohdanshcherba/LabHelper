@@ -93,6 +93,8 @@ export const iconRegistry = {
   pig: require('../../assets/icons/pig.png'),
   cross: require('../../assets/icons/cross.png'),
   pencil: require('../../assets/icons/pencil.png'),
+  plus: require('../../assets/icons/plus.png'),
+  check: require('../../assets/icons/check.png'),
 }
 
 const $imageStyle: ImageStyle = {
