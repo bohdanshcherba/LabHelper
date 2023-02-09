@@ -2,11 +2,11 @@ import React from "react"
 import { Text, View, ViewStyle } from "react-native"
 
 
-export const HomeScreen = ({ navigation }) => {
+export const LeukocytesListScreen = ({ navigation }) => {
 
   return (
     <View style={$container}>
-      <Text>Home</Text>
+      <Text>LeukocytesListScreen</Text>
     </View>
   )
 }
@@ -15,5 +15,5 @@ const $container: ViewStyle = {
   flex: 1,
   height: "100%",
   width: "100%",
-  backgroundColor: "#f3baba"
+  backgroundColor: "#ffffff"
 }

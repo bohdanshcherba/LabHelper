@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import React from "react"
 import { useColorScheme } from "react-native"
 import { HomeNavigator } from "./HomeNavigator"
+import { GorayevCounterScreen } from "../screens"
 
 
 const Stack = createNativeStackNavigator()
@@ -24,6 +25,9 @@ const AppStack = () => {
     >
       <Stack.Group>
         <Stack.Screen name="HomeNavigation" component={HomeNavigator} />
+      </Stack.Group>
+      <Stack.Group>
+        <Stack.Screen name="GorayevCounter" component={GorayevCounterScreen} />
       </Stack.Group>
     </Stack.Navigator>
   )

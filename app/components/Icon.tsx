@@ -78,7 +78,21 @@ export function Icon(props: IconProps) {
 }
 
 export const iconRegistry = {
-
+  calendar: require('../../assets/icons/calendar.png'),
+  calendar1: require('../../assets/icons/calendar1.png'),
+  atom: require('../../assets/icons/atom.png'),
+  atom1: require('../../assets/icons/atom2.png'),
+  dnk: require('../../assets/icons/dnk.png'),
+  statistic: require('../../assets/icons/statistic.png'),
+  microscope: require('../../assets/icons/microscope.png'),
+  money: require('../../assets/icons/money.png'),
+  file: require('../../assets/icons/file.png'),
+  square: require('../../assets/icons/square.png'),
+  calculator: require('../../assets/icons/calculator.png'),
+  reset: require('../../assets/icons/reset.png'),
+  pig: require('../../assets/icons/pig.png'),
+  cross: require('../../assets/icons/cross.png'),
+  pencil: require('../../assets/icons/pencil.png'),
 }
 
 const $imageStyle: ImageStyle = {
