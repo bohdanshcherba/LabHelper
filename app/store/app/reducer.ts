@@ -1,7 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit"
 import { DataStatus } from "../../common/enums/enums"
 
-import { loadGorayevItems, updateGorayevItem } from "./action"
+import { loadGorayevItems, saveGorayevItems, updateGorayevItem } from "./action"
 
 
 type State = {
@@ -26,6 +26,10 @@ const reducer = createReducer(initialState, (builder) => {
     state.gorayevItems = action.payload
   })
   builder.addCase(updateGorayevItem.fulfilled, (state, action) => {
+    state.dataStatus = DataStatus.FULFILLED
+    state.gorayevItems = action.payload
+  })
+  builder.addCase(saveGorayevItems.fulfilled, (state, action) => {
     state.dataStatus = DataStatus.FULFILLED
     state.gorayevItems = action.payload
   })

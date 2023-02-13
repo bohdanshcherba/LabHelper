@@ -8,29 +8,38 @@ import {
   TouchableWithoutFeedback,
   View,
   ViewStyle
+
 } from "react-native"
 import { ConfirmModal, Icon } from "../components"
 import Sound from "react-native-sound"
 import { useAppDispatch } from "../store/store"
 import { loadGorayevItems, updateGorayevItem } from "../store/app/action"
 import { Item } from "../common/types/Item.type"
+import { CalculatorModal } from "../components/CalculatorModal"
 
 
 const sound = require("../../assets/zvuk41.mp3")
 
 
 const ding = new Sound(sound)
+const ding2 = new Sound(sound)
+Sound.setCategory("Playback")
+Sound.setMode("VideoChat")
 
 export const GorayevCounterScreen = ({ navigation, route }) => {
-  Sound.setCategory("Playback")
-  ding.setVolume(1)
-  ding.setSpeed(0.8)
-
   const { item } = route.params
 
   const [value, setValue] = useState(item.value)
   const [isEdit, setIsEdit] = useState(false)
   const [modal, setModal] = useState(false)
+  const [calculatorVisible, setCalculatorVisible] = useState(false)
+
+  useEffect(() => {
+    ding.setSpeed(0.80)
+    ding2.setSpeed(0.80)
+    ding.stop()
+    ding2.stop()
+  }, [])
 
   const dispatch = useAppDispatch()
 
@@ -50,26 +59,30 @@ export const GorayevCounterScreen = ({ navigation, route }) => {
     navigation.goBack(null)
   }
 
-
-
-  useEffect(()=>{
+  useEffect(() => {
     // @ts-ignore
     BackHandler.addEventListener("hardwareBackPress", saveItem)
 
     // @ts-ignore
-    return () => BackHandler.removeEventListener("hardwareBackPress", saveItem);
-  },[value])
-
+    return () => BackHandler.removeEventListener("hardwareBackPress", saveItem)
+  }, [value])
 
   const increment = () => {
+    if (value % 2 === 0) {
+      ding.play()
+    } else {
+      ding2.play()
+    }
+
     setValue(value + 1)
-    ding.play()
+
   }
 
 
   return (
     <View style={$container}>
       <ConfirmModal visible={modal} setVisible={setModal} onConfirm={() => setValue(0)} />
+      <CalculatorModal visible={calculatorVisible} setVisible={setCalculatorVisible} />
       <View style={$header}>
         <TouchableOpacity style={$cross} onPress={closeModal}>
           <Icon icon={"cross"} size={35} />
@@ -91,7 +104,7 @@ export const GorayevCounterScreen = ({ navigation, route }) => {
 
         <View style={{ flexDirection: "row" }}>
           {isEdit ?
-            <Icon icon={"check"} size={35}
+            <Icon icon={"check"} size={39}
                   style={{ marginRight: 15 }}
                   onPress={() => setIsEdit(false)} /> :
             <Icon icon={"pencil"} size={35}
@@ -103,7 +116,7 @@ export const GorayevCounterScreen = ({ navigation, route }) => {
                 style={{ marginRight: 15 }}
                 onPress={() => setModal(true)}
           />
-          <Icon icon={"calculator"} size={35} />
+          <Icon icon={"calculator"} size={35} onPress={()=>setCalculatorVisible(true)} />
         </View>
       </View>
       <TouchableWithoutFeedback onPress={increment} disabled={isEdit}>
@@ -153,7 +166,7 @@ const $counterContainer: ViewStyle = {
 }
 
 const $ModalText: TextStyle = {
-  fontSize: 100,
+  fontSize: 150,
   color: "black"
 }
 

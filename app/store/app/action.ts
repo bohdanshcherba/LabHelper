@@ -20,12 +20,33 @@ const loadGorayevItems = createAsyncThunk<any, any, AsyncThunkConfig>(ActionType
     return items
   })
 
-const saveGorayevItems = createAsyncThunk<any, any, AsyncThunkConfig>(ActionType.SAVE_ITEMS,
+const saveGorayevItems = createAsyncThunk<any, number, AsyncThunkConfig>(ActionType.SAVE_ITEMS,
   async (payload, { extra, getState }) => {
 
-    const { storage } = extra
+    let items = getState().AppReducer.gorayevItems
 
-    const items = getState().AppReducer.gorayevItems
+    const { storage } = extra
+    if (payload === 0) {
+      items = generateEmptyItems(20)
+    }
+    await storage.save(StorageKey.GORAYEV_ITEMS, items)
+
+    return items
+  })
+
+const updateGorayevItems = createAsyncThunk<any, number, AsyncThunkConfig>(ActionType.SAVE_ITEMS,
+  async (pairs, { extra, getState }) => {
+    let items = getState().AppReducer.gorayevItems
+
+    const { storage } = extra
+    if(pairs*2 > items.length){
+      const itemsNew = generateEmptyItems(pairs*2-items.length, (items.length/2)+1)
+      items = [...items, ...itemsNew]
+
+    }else if(pairs*2 < items.length){
+        items = items.slice(0,pairs*2)
+    }
+
     await storage.save(StorageKey.GORAYEV_ITEMS, items)
 
     return items
@@ -37,11 +58,11 @@ const updateGorayevItem = createAsyncThunk<any, Item, AsyncThunkConfig>(ActionTy
     const { storage } = extra
 
     let items = getState().AppReducer.gorayevItems
-    items = items.map(el=>el.key===item.key?item:el)
+    items = items.map(el => el.key === item.key ? item : el)
     await storage.save(StorageKey.GORAYEV_ITEMS, items)
 
     return items
   })
 
 
-export { loadGorayevItems, saveGorayevItems, updateGorayevItem }
+export { loadGorayevItems, saveGorayevItems, updateGorayevItem,updateGorayevItems }
