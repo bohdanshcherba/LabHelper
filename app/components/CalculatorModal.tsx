@@ -1,42 +1,39 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import {
   View, StyleSheet,
   TouchableOpacity, Modal, Text,
-  SafeAreaView, Alert, TextInput, Dimensions
+  SafeAreaView, TextInput, Dimensions, Vibration, BackHandler, PanResponder, Animated
 } from "react-native"
 
 import Draggable from "react-native-draggable"
 import { Icon } from "./Icon"
+import { useAppDispatch, useAppSelector } from "../store/store"
+import { buttons, operators } from "../common/constants/constants"
+import { loadCalculatorValue, saveCalculatorValue } from "../store/app/action"
 
 
 export const CalculatorModal = ({
+
                                   visible,
                                   setVisible,
                                   onConfirm = null
                                 }) => {
+  const { calculatorValue } = useAppSelector((state) => state.DefaultAppReducer)
 
+  const dispatch = useAppDispatch()
 
   const [value, setValue] = useState("")
   const [equal, setEqual] = useState("")
-  const buttons = [
-    { title: "1", key: "1" },
-    { title: "2", key: "2" },
-    { title: "3", key: "3" },
-    { title: "+", key: "+" },
-    { title: "-", key: "-" },
-    { title: "4", key: "4" },
-    { title: "5", key: "5" },
-    { title: "6", key: "6" },
-    { title: "×", key: "*" },
-    { title: "÷", key: "/" },
-    { title: "7", key: "7" },
-    { title: "8", key: "8" },
-    { title: "9", key: "9" },
-    { title: "0", key: "0" },
-    { title: ".", key: "." }
-  ]
 
-  const operators = ["-", "+", "/", "*", "."]
+  useEffect(() => {
+    dispatch(loadCalculatorValue([]))
+  }, [])
+
+  useEffect(() => {
+
+    setEqual(calculatorValue)
+    setValue(calculatorValue)
+  }, [calculatorValue])
 
   const onPressButton = (title, key) => {
     if (key === "-" || key === "+" || key === "/" || key === "*" || key === ".") {
@@ -50,13 +47,40 @@ export const CalculatorModal = ({
 
   const confirmBtn = () => {
     try {
-      setValue(eval(equal).toString())
-      setEqual(eval(equal).toString())
+      let result = eval(equal).toString()
+
+      if (result.split(".")[1]?.length > 3) {
+
+        result = Number(result).toFixed(3)
+      }
+      result = result.toString()
+      setValue(result)
+      setEqual(result)
     } catch (e) {
       console.log(e)
     }
-
   }
+
+  const onCloseCalculator = () => {
+    dispatch(saveCalculatorValue(value))
+  }
+
+
+  const clearLastElement = () => {
+    Vibration.vibrate(100)
+    const newEqual = equal.slice(0, -1)
+    const newValue = value.slice(0, -1)
+    setValue(newValue)
+    setEqual(newEqual)
+  }
+
+  useEffect(() => {
+    // @ts-ignore
+    BackHandler.addEventListener("hardwareBackPress", onCloseCalculator)
+    // @ts-ignore
+    return () => BackHandler.removeEventListener("hardwareBackPress", onCloseCalculator)
+  }, [value])
+
 
   return (
     <>
@@ -65,21 +89,31 @@ export const CalculatorModal = ({
              visible={visible}
              onRequestClose={() => {
                setVisible(!visible)
-             }}
-      >
+             }}>
+
+
         <SafeAreaView style={{ flex: 1 }}>
-          <Draggable touchableOpacityProps={{ activeOpacity: 1 }} minX={0} maxX={windowWidth}>
+          <Draggable
+
+            touchableOpacityProps={{ activeOpacity: 1 }}
+          >
+
             <View style={s.modalView}>
-              <TouchableOpacity style={s.close} onPress={() => setVisible(false)}>
-                <Icon icon={"cross"} size={20} color={"black"} />
+              <TouchableOpacity style={s.close} onPress={() => {
+                setVisible(false)
+                onCloseCalculator()
+              }}>
+                <Icon icon={"cross"} size={28} color={"black"} />
               </TouchableOpacity>
 
 
               <View style={s.buttons}>
-                <TouchableOpacity style={s.btn} onPress={() => {
-                  setEqual("")
-                  setValue("")
-                }}>
+                <TouchableOpacity style={s.btn}
+                                  onLongPress={clearLastElement}
+                                  onPress={() => {
+                                    setEqual("")
+                                    setValue("")
+                                  }}>
                   <Text style={s.btnText}>
                     C
                   </Text>
@@ -97,6 +131,7 @@ export const CalculatorModal = ({
                 })}
               </View>
             </View>
+
           </Draggable>
         </SafeAreaView>
       </Modal>
@@ -115,8 +150,8 @@ const s = StyleSheet.create({
 
   },
   modalView: {
-    width: windowWidth - 40+6,
-    margin:15,
+    width: windowWidth - 40 + 6,
+    margin: 15,
     backgroundColor: "white",
     borderWidth: 1,
     borderRadius: 16,
@@ -130,12 +165,27 @@ const s = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4
   },
+  dragItem: {
+    width: "100%",
+    height: 20,
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  dragRiska: {
+    zIndex: 11000,
+    width: 70,
+    height: 70,
+    backgroundColor: "rgba(103,103,103,0.53)",
+    borderRadius: 120
+
+  },
 
   buttons: {
     flexDirection: "row",
     flexWrap: "wrap",
     paddingVertical: 5,
-    paddingHorizontal:3,
+    paddingHorizontal: 3
   },
 
   btn: {
@@ -156,7 +206,7 @@ const s = StyleSheet.create({
     marginVertical: 5,
     marginHorizontal: 3,
     height: btnSize,
-    width: (btnSize * 3) + 12,
+    width: (btnSize * 3) + 11,
     color: "black",
     textAlign: "right",
     fontSize: 30
@@ -167,7 +217,8 @@ const s = StyleSheet.create({
     right: -13,
     backgroundColor: "#E53935",
     padding: 5,
-    borderRadius: 15
+    borderRadius: 15,
+    zIndex: 10
   },
   btnText: {
     fontSize: 30,

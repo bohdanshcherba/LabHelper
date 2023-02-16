@@ -3,7 +3,7 @@ import { View, ViewStyle, ScrollView } from "react-native"
 import { Block, ConfirmModal, Icon } from "../components"
 import { generateEmptyItems } from "../utils/gorayev"
 import { useAppDispatch, useAppSelector } from "../store/store"
-import { loadGorayevItems, saveGorayevItems, updateGorayevItem, updateGorayevItems } from "../store/app/action"
+import { loadGorayevItems, saveGorayevItems, updateGorayevItem, updateGorayevItems } from "../store/GorayevItems/action"
 import { CountModal } from "../components/CountModal"
 import { CalculatorModal } from "../components/CalculatorModal"
 
@@ -41,6 +41,7 @@ export const GorayevListScreen = ({ navigation }) => {
                   setVisible={setModalCount}
                   onConfirm={confirmCount}
                   currentValue={items.length / 2}
+                  title={"How much pairs?"}
       />
       <ConfirmModal visible={modal}
                     setVisible={setModal}

@@ -1,14 +1,18 @@
 import React from "react"
-import { Dimensions, StyleSheet, Text, View } from "react-native"
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
 import { LeukocytesItem } from "./LeukocyteItem"
 import { LeukocytesBlockType } from "../common/types/Leukocytes.type"
 
 
-export const LeukocytesBlock = ({index, block}:{index:number, block:LeukocytesBlockType}) => {
+export const LeukocytesBlock = ({index, block, onPress}:{
+  index:number,
+  block:LeukocytesBlockType
+  onPress: any
+}) => {
 
 
-  return <View style={s.block}>
+  return <TouchableOpacity style={s.block} onPress={onPress}>
     <View style={s.opacity}>
       <Text style={s.opacityText}>{index}</Text>
     </View>
@@ -16,10 +20,10 @@ export const LeukocytesBlock = ({index, block}:{index:number, block:LeukocytesBl
       {block.leukocytes.map((el,index)=>
         <LeukocytesItem key={index} typeImage={el.name} value={el.value}/>)}
       <View style={s.longItem}>
-        <Text style={s.longItemText}>{block.title} </Text>
+        <Text style={s.longItemText}>{block.title===""?"I❤️U":block.title} </Text>
       </View>
     </View>
-  </View>
+  </TouchableOpacity>
 }
 
 const windowWidth = Dimensions.get("window").width

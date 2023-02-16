@@ -1,5 +1,5 @@
 import React from "react"
-import { ViewStyle } from "react-native"
+import { BackHandler, ViewStyle } from "react-native"
 import { GorayevListScreen, CalendarScreen, LeukocytesListScreen, HomeScreen, FilesScreen } from "../screens"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Icon } from "../components"
@@ -40,10 +40,15 @@ export function HomeNavigator() {
     }
   })
 
+
+
   return (
     <Tab.Navigator screenOptions={tabNavigationOption}>
       <Tab.Screen name="Gorayev" component={GorayevListScreen} />
-      <Tab.Screen name="Leukocytes" component={LeukocytesListScreen} />
+      <Tab.Screen name="Leukocytes"
+                  component={LeukocytesListScreen}
+
+      />
       <Tab.Screen name="Files" component={FilesScreen} />
 
       <Tab.Screen name="Statistic" component={HomeScreen} />

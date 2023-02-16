@@ -1,35 +1,66 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native"
 import { LeukocytesBlock } from "../components/LeukocytesBlock"
-import { Icon } from "../components"
+import { ConfirmModal, Icon } from "../components"
 import { CalculatorModal } from "../components/CalculatorModal"
-import { LeukocytesBlockType } from "../common/types/Leukocytes.type"
+
+import { useAppDispatch, useAppSelector } from "../store/store"
+import { emptyItem, loadLeukocytesBlocks, updateLeukocytesBlocks } from "../store/LeukocytesBlocks/action"
+import { generateEmptyItems } from "../utils/gorayev"
+import { CountModal } from "../components/CountModal"
+import { saveGorayevItems, updateGorayevItems } from "../store/GorayevItems/action"
 
 
-const data: Array<LeukocytesBlockType> = [
-  {
-    title: "Leukocytes",
-    leukocytes: [
-      { name: "basophil", value: 0 },
-      { name: "eosinophil", value: 0 },
-      { name: "monocyte", value: 0 },
-      { name: "banded", value: 0 },
-      { name: "mature", value: 0 },
-      { name: "lymphocyte", value: 0 },
-      { name: "platelet", value: 0 }
-    ]
-  }
 
-]
 
 export const LeukocytesListScreen = ({ navigation }) => {
 
   const [modal, setModal] = useState(false)
   const [modalCount, setModalCount] = useState(false)
   const [calculatorVisible, setCalculatorVisible] = useState(false)
+  const [items, updateItems] = useState<any>([])
+
+  const { leukocytesBlocks } = useAppSelector((state) => state.LeukocytesReducer)
+
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(loadLeukocytesBlocks([]))
+  }, [])
+
+  useEffect(() => {
+    updateItems(leukocytesBlocks)
+  }, [leukocytesBlocks])
+
+
+  const setCounter = (key) => {
+    navigation.navigate("LeukocytesCounter", { item: items[key], index:key })
+  }
+
+  const confirmCount = (count) => {
+    setModalCount(false)
+    dispatch(updateLeukocytesBlocks(count))
+  }
+
+  const addOneCount = () => {
+    dispatch(updateLeukocytesBlocks(items.length+1))
+    navigation.navigate("LeukocytesCounter", { item: emptyItem , index:items.length })
+
+  }
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
+      <CountModal visible={modalCount}
+                  setVisible={setModalCount}
+                  onConfirm={confirmCount}
+                  currentValue={items.length}
+                  title={"How much items?"}
+
+      />
+      <ConfirmModal visible={modal}
+                    setVisible={setModal}
+                    onConfirm={() => {
+                      dispatch(updateLeukocytesBlocks(items.length))
+                    }} />
       <CalculatorModal visible={calculatorVisible} setVisible={setCalculatorVisible} />
       <View style={$header}>
         <Icon icon={"plus"} size={35} style={{ marginRight: 15 }} onPress={() => setModalCount(true)} />
@@ -37,9 +68,9 @@ export const LeukocytesListScreen = ({ navigation }) => {
         <Icon icon={"calculator"} size={35} onPress={() => setCalculatorVisible(true)} />
       </View>
       <ScrollView contentContainerStyle={s.container}>
-        {data.map((el, index) => <LeukocytesBlock key={index} index={index + 1} block={el} />)}
+        {items.map((el, index) => <LeukocytesBlock onPress={()=>setCounter(index)} key={index} index={index + 1} block={el} />)}
 
-        <TouchableOpacity style={s.addItem} onPress={() => navigation.navigate("LeukocytesCounter")}>
+        <TouchableOpacity style={s.addItem} onPress={addOneCount}>
           <Text style={s.addItemText}>+</Text>
         </TouchableOpacity>
       </ScrollView>

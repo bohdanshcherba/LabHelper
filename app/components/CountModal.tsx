@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Modal, Text, SafeAreaView} from "react-native"
 
 
-export const CountModal = ({ visible, setVisible, onConfirm, currentValue=10}) => {
+export const CountModal = ({ visible, setVisible,
+                             title,
+                             onConfirm,
+                             currentValue=10}) => {
 
   const [count, setCount] = useState(currentValue)
 
@@ -23,7 +26,7 @@ export const CountModal = ({ visible, setVisible, onConfirm, currentValue=10}) =
           <View style={s.centeredView}>
             <View style={s.modalView}>
               <View style={s.modalTextContainer}>
-                <Text style={s.modalText}>How much pairs?</Text>
+                <Text style={s.modalText}>{title}</Text>
                 <View style={s.counter}>
                   <TouchableOpacity style={s.btnCount} onPress={() => setCount(count - 1)}>
                     <Text style={s.btnCountText}>-</Text>

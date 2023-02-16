@@ -2,67 +2,29 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 import { ActionType } from "./common"
 import { AsyncThunkConfig } from "../store"
 import { StorageKey } from "../../common/enums/enums"
-import { generateEmptyItems } from "../../utils/gorayev"
-import { Item } from "../../common/types/Item.type"
 
 
-const loadGorayevItems = createAsyncThunk<any, any, AsyncThunkConfig>(ActionType.LOAD_ITEMS,
+
+export const loadCalculatorValue = createAsyncThunk<any, any, AsyncThunkConfig>(ActionType.LOAD_CALCULATOR,
   async (payload, { extra }) => {
 
     const { storage } = extra
 
-    let items = await storage.load(StorageKey.GORAYEV_ITEMS)
+    let value = await storage.load(StorageKey.CALCULATOR_VALUE)
 
-    if (!items) {
-      items = generateEmptyItems(20)
-      await storage.save(StorageKey.GORAYEV_ITEMS, items)
-    }
-    return items
-  })
-
-const saveGorayevItems = createAsyncThunk<any, number, AsyncThunkConfig>(ActionType.SAVE_ITEMS,
-  async (payload, { extra, getState }) => {
-
-    let items = getState().AppReducer.gorayevItems
-
-    const { storage } = extra
-    if (payload === 0) {
-      items = generateEmptyItems(20)
-    }
-    await storage.save(StorageKey.GORAYEV_ITEMS, items)
-
-    return items
-  })
-
-const updateGorayevItems = createAsyncThunk<any, number, AsyncThunkConfig>(ActionType.SAVE_ITEMS,
-  async (pairs, { extra, getState }) => {
-    let items = getState().AppReducer.gorayevItems
-
-    const { storage } = extra
-    if(pairs*2 > items.length){
-      const itemsNew = generateEmptyItems(pairs*2-items.length, (items.length/2)+1)
-      items = [...items, ...itemsNew]
-
-    }else if(pairs*2 < items.length){
-        items = items.slice(0,pairs*2)
+    if (!value) {
+      value = ""
     }
 
-    await storage.save(StorageKey.GORAYEV_ITEMS, items)
 
-    return items
+    return value
   })
-
-const updateGorayevItem = createAsyncThunk<any, Item, AsyncThunkConfig>(ActionType.UPDATE_ITEM,
-  async (item, { extra, getState }) => {
+export const saveCalculatorValue = createAsyncThunk<any, string, AsyncThunkConfig>(ActionType.SAVE_CALCULATOR,
+  async (value, { extra}) => {
 
     const { storage } = extra
 
-    let items = getState().AppReducer.gorayevItems
-    items = items.map(el => el.key === item.key ? item : el)
-    await storage.save(StorageKey.GORAYEV_ITEMS, items)
+    await storage.save(StorageKey.CALCULATOR_VALUE, value)
 
-    return items
+    return value
   })
-
-
-export { loadGorayevItems, saveGorayevItems, updateGorayevItem,updateGorayevItems }

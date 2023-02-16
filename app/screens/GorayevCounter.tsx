@@ -13,7 +13,7 @@ import {
 import { ConfirmModal, Icon } from "../components"
 import Sound from "react-native-sound"
 import { useAppDispatch } from "../store/store"
-import { loadGorayevItems, updateGorayevItem } from "../store/app/action"
+import { loadGorayevItems, updateGorayevItem } from "../store/GorayevItems/action"
 import { Item } from "../common/types/Item.type"
 import { CalculatorModal } from "../components/CalculatorModal"
 

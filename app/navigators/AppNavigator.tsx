@@ -5,12 +5,17 @@ import {
 } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import React from "react"
-import { useColorScheme } from "react-native"
+import { BackHandler, useColorScheme } from "react-native"
 import { HomeNavigator } from "./HomeNavigator"
 import { GorayevCounterScreen, LeukocytesCounterScreen } from "../screens"
 
 
 const Stack = createNativeStackNavigator()
+
+const handleBackButton = () => {
+  BackHandler.exitApp()
+  return true
+}
 
 const AppStack = () => {
 
@@ -24,7 +29,12 @@ const AppStack = () => {
       initialRouteName={"Home"}
     >
       <Stack.Group>
-        <Stack.Screen name="HomeNavigation" component={HomeNavigator} />
+        <Stack.Screen name="HomeNavigation" component={HomeNavigator}
+                      listeners={{
+                        focus: () => BackHandler.addEventListener("hardwareBackPress", handleBackButton)
+                        , blur: () => BackHandler.removeEventListener("hardwareBackPress", handleBackButton)
+                      }}
+        />
       </Stack.Group>
       <Stack.Group>
         <Stack.Screen name="GorayevCounter" component={GorayevCounterScreen} />
