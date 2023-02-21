@@ -1,4 +1,5 @@
-export * from "./HomeScreen"
+export * from "./Entries/EntriesScreen"
+export * from "./Entries/NewEntryScreen"
 export * from "./GorayevListScreen"
 export * from "./GorayevCounter"
 export * from "./LeukocytesListScreen"

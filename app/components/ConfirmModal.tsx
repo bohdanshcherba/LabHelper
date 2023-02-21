@@ -2,7 +2,7 @@ import React from "react"
 import { View, StyleSheet, TouchableOpacity, Modal, Text, SafeAreaView, Alert } from "react-native"
 
 
-export const ConfirmModal = ({ visible, setVisible, onConfirm }) => {
+export const ConfirmModal = ({ visible, setVisible, onConfirm, text='Reset'  }) => {
 
   return (
     <>
@@ -27,7 +27,7 @@ export const ConfirmModal = ({ visible, setVisible, onConfirm }) => {
                 </TouchableOpacity>
                 <Text style={{ color: "rgba(0,0,0,0.59)", fontSize: 24 }}>|</Text>
                 <TouchableOpacity style={s.modalBtn} onPress={() => onConfirm()}>
-                  <Text style={s.modalBtnText}>Reset</Text>
+                  <Text style={s.modalBtnText}>{text}</Text>
 
                 </TouchableOpacity>
 

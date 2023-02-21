@@ -20,7 +20,7 @@ export const LeukocytesBlock = ({index, block, onPress}:{
       {block.leukocytes.map((el,index)=>
         <LeukocytesItem key={index} typeImage={el.name} value={el.value}/>)}
       <View style={s.longItem}>
-        <Text style={s.longItemText}>{block.title===""?"I❤️U":block.title} </Text>
+        <Text style={s.longItemText}>{block.title} </Text>
       </View>
     </View>
   </TouchableOpacity>

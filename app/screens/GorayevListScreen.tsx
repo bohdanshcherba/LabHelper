@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react"
 import { View, ViewStyle, ScrollView } from "react-native"
-import { Block, ConfirmModal, Icon } from "../components"
+import { Block, Header, CountModal } from "../components"
 import { generateEmptyItems } from "../utils/gorayev"
 import { useAppDispatch, useAppSelector } from "../store/store"
-import { loadGorayevItems, saveGorayevItems, updateGorayevItem, updateGorayevItems } from "../store/GorayevItems/action"
-import { CountModal } from "../components/CountModal"
-import { CalculatorModal } from "../components/CalculatorModal"
+import { loadGorayevItems, saveGorayevItems, updateGorayevItems } from "../store/GorayevItems/action"
 
 
 export const GorayevListScreen = ({ navigation }) => {
-  const { gorayevItems } = useAppSelector((state) => state.AppReducer)
-  const [modal, setModal] = useState(false)
-  const [modalCount, setModalCount] = useState(false)
-  const [calculatorVisible, setCalculatorVisible] = useState(false)
 
+  const { gorayevItems } = useAppSelector((state) => state.AppReducer)
   const dispatch = useAppDispatch()
+
+  const [modalCount, setModalCount] = useState(false)
+  const [items, updateItems] = useState(generateEmptyItems(gorayevItems))
+
   useEffect(() => {
     dispatch(loadGorayevItems([]))
   }, [])
@@ -23,12 +22,9 @@ export const GorayevListScreen = ({ navigation }) => {
     updateItems(gorayevItems)
   }, [gorayevItems])
 
-  const [items, updateItems] = useState(generateEmptyItems(gorayevItems))
-
   const setCounter = (key) => {
     navigation.navigate("GorayevCounter", { item: items[key] })
   }
-
 
   const confirmCount = (count) => {
     setModalCount(false)
@@ -36,40 +32,31 @@ export const GorayevListScreen = ({ navigation }) => {
   }
 
   return (
-    <View >
+    <View style={$screenView}>
       <CountModal visible={modalCount}
                   setVisible={setModalCount}
                   onConfirm={confirmCount}
                   currentValue={items.length / 2}
                   title={"How much pairs?"}
       />
-      <ConfirmModal visible={modal}
-                    setVisible={setModal}
-                    onConfirm={() => {
-                      dispatch(saveGorayevItems(0))
-                    }} />
-      <CalculatorModal visible={calculatorVisible} setVisible={setCalculatorVisible} />
-      <View style={$header}>
-        <Icon icon={"plus"} size={35} style={{ marginRight: 15 }} onPress={() => setModalCount(true)} />
-        <Icon icon={"reset"} size={35} style={{ marginRight: 15 }} onPress={() => setModal(true)} />
-        <Icon icon={"calculator"} size={35} onPress={() => setCalculatorVisible(true)} />
-      </View>
+      <Header
+        onPressPlus={() => setModalCount(true)}
+        onPressReset={() => dispatch(saveGorayevItems(0))}
+      />
       <ScrollView contentContainerStyle={$container}>
-        {items.map((item, index) => <Block onPress={() => setCounter(index)} key={index} item={item} />
-        )}
+        {items.map((item, index) =>
+          <Block onPress={() => setCounter(index)}
+                 key={index}
+                 item={item}
+          />)}
       </ScrollView>
     </View>
-
   )
 }
 
-const $header: ViewStyle = {
-  backgroundColor: "#ffffff",
-  paddingTop: 20,
-  paddingBottom: 10,
-  justifyContent: "flex-end",
-  paddingHorizontal: 30,
-  flexDirection: "row"
+const $screenView: ViewStyle = {
+  flex:1,
+  backgroundColor: "#ffffff"
 }
 
 const $container: ViewStyle = {
@@ -79,9 +66,3 @@ const $container: ViewStyle = {
   flexWrap: "wrap",
   paddingBottom: 60
 }
-
-
-
-
-
-

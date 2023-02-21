@@ -38,6 +38,10 @@ export const CalculatorModal = ({
   const onPressButton = (title, key) => {
     if (key === "-" || key === "+" || key === "/" || key === "*" || key === ".") {
       if (operators.includes(equal.slice(-1))) {
+        const newEqual = equal.slice(0, -1)
+        const newValue = value.slice(0, -1)
+        setEqual(newEqual + key)
+        setValue(newValue + title)
         return
       }
     }
@@ -62,7 +66,7 @@ export const CalculatorModal = ({
   }
 
   const onCloseCalculator = () => {
-    dispatch(saveCalculatorValue(value))
+    dispatch(saveCalculatorValue(equal))
   }
 
 
@@ -92,47 +96,38 @@ export const CalculatorModal = ({
              }}>
 
 
-        <SafeAreaView style={{ flex: 1 }}>
-          <Draggable
-
-            touchableOpacityProps={{ activeOpacity: 1 }}
-          >
-
-            <View style={s.modalView}>
-              <TouchableOpacity style={s.close} onPress={() => {
-                setVisible(false)
-                onCloseCalculator()
-              }}>
-                <Icon icon={"cross"} size={28} color={"black"} />
+        <SafeAreaView style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <View style={s.modalView}>
+            <TouchableOpacity style={s.close} onPress={() => {
+              setVisible(false)
+              onCloseCalculator()
+            }}>
+              <Icon icon={"cross_field"} size={28} color={"black"}  />
+            </TouchableOpacity>
+            <View style={s.buttons}>
+              <TouchableOpacity style={s.btn}
+                                onLongPress={clearLastElement}
+                                onPress={()=>{
+                                  setEqual("")
+                                  setValue("")
+                                }}>
+                <Text style={s.btnText}>
+                  C
+                </Text>
               </TouchableOpacity>
-
-
-              <View style={s.buttons}>
-                <TouchableOpacity style={s.btn}
-                                  onLongPress={clearLastElement}
-                                  onPress={() => {
-                                    setEqual("")
-                                    setValue("")
-                                  }}>
+              <TextInput style={s.input} editable={false} value={value} />
+              <TouchableOpacity onPress={confirmBtn} style={s.btn}>
+                <Text style={s.btnText}>=</Text>
+              </TouchableOpacity>
+              {buttons.map(el => {
+                return <TouchableOpacity key={el.title} style={s.btn} onPress={() => onPressButton(el.title, el.key)}>
                   <Text style={s.btnText}>
-                    C
+                    {el.title}
                   </Text>
                 </TouchableOpacity>
-                <TextInput style={s.input} editable={false} value={value} />
-                <TouchableOpacity onPress={confirmBtn} style={s.btn}>
-                  <Text style={s.btnText}>=</Text>
-                </TouchableOpacity>
-                {buttons.map(el => {
-                  return <TouchableOpacity key={el.title} style={s.btn} onPress={() => onPressButton(el.title, el.key)}>
-                    <Text style={s.btnText}>
-                      {el.title}
-                    </Text>
-                  </TouchableOpacity>
-                })}
-              </View>
+              })}
             </View>
-
-          </Draggable>
+          </View>
         </SafeAreaView>
       </Modal>
     </>

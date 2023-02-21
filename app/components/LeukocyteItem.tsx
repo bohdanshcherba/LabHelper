@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native"
+import { Dimensions, Image, ImageStyle, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native"
 
 
 const windowWidth = Dimensions.get("window").width
@@ -7,27 +7,28 @@ export const LeukocytesItem = ({ typeImage, value, size = "S", onPress, onLongPr
   size?: "S" | "L",
   typeImage: LeukocyteName,
   value: number,
-  onPress?: any
+  onPress?: () => void,
+  onLongPress?: () => void,
 }) => {
 
-  let itemSizeStyle: ViewStyle = {}
+  let itemSizeStyle: ImageStyle = {}
 
   if (size === "L") {
     const blockWidth = windowWidth
     itemSizeStyle = {
       width: (blockWidth / 3) - 5 * 3,
-      height: (blockWidth / 3) - 5 * 3,
+      height: (blockWidth / 3) - 5 * 3
 
     }
   }
 
   return <TouchableOpacity style={[s.item, itemSizeStyle]}
-                           disabled={size==="S"}
+                           disabled={size === "S"}
                            onPress={onPress}
                            onLongPress={onLongPress}
                            activeOpacity={1}
   >
-    <View style={[s.counter, size === "L" ? { width: 30, height: 45 } : null]}>
+    <View style={[s.counter, size === "L" ? { minWidth: 30, height: 45 } : null]}>
       <Text style={[s.counterText, size === "L" ? { fontSize: 20 } : null]}>{value}</Text>
     </View>
     <Image source={imagesRegistry[typeImage]} style={[s.itemImage, itemSizeStyle]} />
@@ -38,32 +39,32 @@ export const LeukocytesItem = ({ typeImage, value, size = "S", onPress, onLongPr
 
 const blockWidth = (windowWidth / 2) - 15
 const s = StyleSheet.create({
-  item: {
-    width: (blockWidth / 3) - 5 * 3,
-    height: (blockWidth / 3) - 5 * 3,
-    marginHorizontal: 5,
-    marginVertical: 5,
-    borderRadius: 150
-  },
-  itemImage: {
-    width: (blockWidth / 3) - 5 * 3,
-    height: (blockWidth / 3) - 5 * 3
-  },
   counter: {
+    alignItems: "center",
+    backgroundColor: "rgba(122,28,188,1)",
+    borderRadius: 12,
+    flex: 1,
+    height: 16,
+    justifyContent: "center",
+    minWidth: 12,
     position: "absolute",
     right: 0,
-    width: 12,
-    height: 16,
-    backgroundColor: "rgba(122,28,188,1)",
-    zIndex: 10,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12
+    zIndex: 10
   },
   counterText: {
     color: "white",
     fontSize: 10
+  },
+  item: {
+    borderRadius: 150,
+    height: (blockWidth / 3) - 5 * 3,
+    marginHorizontal: 5,
+    marginVertical: 5,
+    width: (blockWidth / 3) - 5 * 3
+  },
+  itemImage: {
+    height: (blockWidth / 3) - 5 * 3,
+    width: (blockWidth / 3) - 5 * 3
   }
 })
 

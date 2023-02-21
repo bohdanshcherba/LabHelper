@@ -15,11 +15,10 @@ import { ConfirmModal, Icon } from "../components"
 import { CalculatorModal } from "../components/CalculatorModal"
 import { LeukocytesItem } from "../components/LeukocyteItem"
 import { LeukocytesBlockType } from "../common/types/Leukocytes.type"
-
 import { useAppDispatch } from "../store/store"
 import { updateLeukocytesBlock } from "../store/LeukocytesBlocks/action"
 import Sound from "react-native-sound"
-
+import { saveCalculatorValue } from "../store/app/action"
 
 
 const sound = require("../../assets/zvuk41.mp3")
@@ -41,19 +40,15 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
   const [isEdit, setIsEdit] = useState(false)
   const [leukocytesArr, setLeukocytes] = useState([...item.leukocytes])
   const [total, setTotal] = useState(item.total)
-  const [isFull, setIsFull] = useState(false)
 
   useEffect(() => {
-
     ding.setSpeed(0.79)
     ding2.setSpeed(0.79)
     ding.stop()
     ding2.stop()
-
   }, [])
 
   const saveItem = () => {
-
     const newItem: LeukocytesBlockType = {
       title: text,
       total: total,
@@ -65,39 +60,31 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
 
   const handleBack = () => {
     saveItem()
+    dispatch(saveCalculatorValue(""))
     ding.release()
     ding2.release()
+    return undefined
   }
 
   useEffect(() => {
-    // @ts-ignore
     BackHandler.addEventListener("hardwareBackPress", handleBack)
-
-
-    return () => {
-      // @ts-ignore
-      BackHandler.removeEventListener("hardwareBackPress", handleBack)
-
-    }
+    return () => BackHandler.removeEventListener("hardwareBackPress", handleBack)
   }, [leukocytesArr, text])
 
   useEffect(() => {
-
     Keyboard.addListener("keyboardDidHide", () => setIsEdit(false))
-
-    return () => {
-      Keyboard.removeAllListeners("keyboardDidHide")
-    }
+    return () => Keyboard.removeAllListeners("keyboardDidHide")
   }, [isEdit])
-
 
   const closeModal = () => {
     saveItem()
+    dispatch(saveCalculatorValue(""))
+    ding.release()
+    ding2.release()
     navigation.goBack(null)
   }
 
   const incrementValue = (key) => {
-
     if (total < 100) {
       if (total % 2 === 0) {
         ding.play(() => ding.release())
@@ -128,7 +115,6 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
             index === key ? { value: el.value + 1, name: el.name } : el)
         setLeukocytes(newArr)
       }
-
     }
   }
 
@@ -157,7 +143,7 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
       { name: "platelet", value: 0 }
     ])
     setTotal(0)
-    setText('')
+    setText("")
   }
 
   return (
@@ -200,7 +186,8 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
           typeImage={el.name}
           value={el.value} />)}
         <TouchableOpacity style={$longItem} onPress={() => setIsEdit(true)}>
-          <TextInput multiline editable={false} style={$longItemText} value={text} placeholderTextColor={'#808080'} placeholder={"Note"} />
+          <TextInput multiline editable={false} style={$longItemText} value={text} placeholderTextColor={"#808080"}
+                     placeholder={"Note"} />
         </TouchableOpacity>
       </View>
 

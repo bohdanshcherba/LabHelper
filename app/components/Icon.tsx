@@ -92,9 +92,14 @@ export const iconRegistry = {
   reset: require('../../assets/icons/reset.png'),
   pig: require('../../assets/icons/pig.png'),
   cross: require('../../assets/icons/cross.png'),
+  cross_field: require('../../assets/icons/cross_field.png'),
   pencil: require('../../assets/icons/pencil.png'),
   plus: require('../../assets/icons/plus.png'),
   check: require('../../assets/icons/check.png'),
+  caret_forward: require('../../assets/icons/caret_forward.png'),
+  caret_back: require('../../assets/icons/caret_back.png'),
+  caret_back_outline: require('../../assets/icons/caret_back_outline.png'),
+  caret_forward_outline: require('../../assets/icons/caret_forward_outline.png'),
 }
 
 const $imageStyle: ImageStyle = {
