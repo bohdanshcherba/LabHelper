@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
 import { LeukocytesItem } from "./LeukocyteItem"
@@ -18,7 +18,9 @@ export const LeukocytesBlock = ({index, block, onPress}:{
     </View>
     <View style={s.blocks}>
       {block.leukocytes.map((el,index)=>
-        <LeukocytesItem key={index} typeImage={el.name} value={el.value}/>)}
+        <LeukocytesItem key={index} typeImage={el.name}
+                        value={el.value}
+                        platelet={block.platelet} />)}
       <View style={s.longItem}>
         <Text style={s.longItemText}>{block.title} </Text>
       </View>

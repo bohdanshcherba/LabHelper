@@ -9,5 +9,7 @@ export type Leukocyte = {
 export type LeukocytesBlockType= {
   title:string,
   total:number,
-  leukocytes: Array<Leukocyte>
+  leukocytes: Array<Leukocyte>,
+  platelet:boolean,
+
 }

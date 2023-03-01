@@ -46,7 +46,7 @@ export const LeukocytesListScreen = ({ navigation }) => {
                   setVisible={setModalCount}
                   onConfirm={confirmCount}
                   currentValue={items.length}
-                  title={"How much items?"}
+                  title={"Скільки аналізів?"}
       />
       <Header
         onPressPlus={() => setModalCount(true)}

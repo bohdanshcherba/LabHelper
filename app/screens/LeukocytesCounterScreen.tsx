@@ -24,7 +24,7 @@ import { saveCalculatorValue } from "../store/app/action"
 const sound = require("../../assets/zvuk41.mp3")
 const notifySound = require("../../assets/notify.wav")
 const notify = new Sound(notifySound)
-Sound.setCategory("Playback")
+Sound.setCategory("Playback", true)
 Sound.setMode("VideoChat")
 
 export const LeukocytesCounterScreen = ({ navigation, route }) => {
@@ -40,6 +40,7 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
   const [isEdit, setIsEdit] = useState(false)
   const [leukocytesArr, setLeukocytes] = useState([...item.leukocytes])
   const [total, setTotal] = useState(item.total)
+  const [platelet, setPlatelet] = useState(item.platelet)
 
   useEffect(() => {
     ding.setSpeed(0.79)
@@ -52,7 +53,8 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
     const newItem: LeukocytesBlockType = {
       title: text,
       total: total,
-      leukocytes: leukocytesArr
+      leukocytes: leukocytesArr,
+      platelet:platelet
     }
 
     dispatch(updateLeukocytesBlock({ item: newItem, index }))
@@ -144,6 +146,7 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
     ])
     setTotal(0)
     setText("")
+    setPlatelet(false)
   }
 
   return (
@@ -184,10 +187,13 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
           size={"L"}
           key={index}
           typeImage={el.name}
-          value={el.value} />)}
+          value={el.value}
+          platelet={platelet}
+          setPlatelet={setPlatelet}
+        />)}
         <TouchableOpacity style={$longItem} onPress={() => setIsEdit(true)}>
           <TextInput multiline editable={false} style={$longItemText} value={text} placeholderTextColor={"#808080"}
-                     placeholder={"Note"} />
+                     placeholder={"Нотатка"} />
         </TouchableOpacity>
       </View>
 

@@ -37,7 +37,7 @@ export const GorayevListScreen = ({ navigation }) => {
                   setVisible={setModalCount}
                   onConfirm={confirmCount}
                   currentValue={items.length / 2}
-                  title={"How much pairs?"}
+                  title={"Скільки пар?"}
       />
       <Header
         onPressPlus={() => setModalCount(true)}

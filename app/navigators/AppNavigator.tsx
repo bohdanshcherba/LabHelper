@@ -26,7 +26,7 @@ const AppStack = () => {
           headerShown: false
         }
       }}
-      initialRouteName={"Home"}
+      initialRouteName={"HomeNavigation"}
     >
       <Stack.Group>
         <Stack.Screen name="HomeNavigation" component={HomeNavigator}

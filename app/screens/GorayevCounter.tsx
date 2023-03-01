@@ -23,8 +23,8 @@ const sound = require("../../assets/zvuk41.mp3")
 
 const ding = new Sound(sound)
 const ding2 = new Sound(sound)
-Sound.setCategory("Playback")
-Sound.setMode("VideoChat")
+Sound.setCategory("Playback", true)
+Sound.setMode("SpokenAudio")
 
 export const GorayevCounterScreen = ({ navigation, route }) => {
   const { item } = route.params

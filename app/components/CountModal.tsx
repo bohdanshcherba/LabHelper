@@ -40,11 +40,11 @@ export const CountModal = ({ visible, setVisible,
 
               <View style={s.innerContainer}>
                 <TouchableOpacity style={s.modalBtn} onPress={() => setVisible(false)}>
-                  <Text style={s.modalBtnText}>Cancel</Text>
+                  <Text style={s.modalBtnText}>Відміна</Text>
                 </TouchableOpacity>
                 <Text style={{ color: "rgba(0,0,0,0.59)", fontSize: 24 }}>|</Text>
                 <TouchableOpacity style={s.modalBtn} onPress={() => onConfirm(count)}>
-                  <Text style={s.modalBtnText}>Save</Text>
+                  <Text style={s.modalBtnText}>Зберегти</Text>
                 </TouchableOpacity>
               </View>
             </View>

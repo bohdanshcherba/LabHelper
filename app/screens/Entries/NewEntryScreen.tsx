@@ -52,7 +52,7 @@ export const NewEntriesScreen = ({ navigation }) => {
                 setCounts={setCounts} />
       <View style={$bottom}>
         <TouchableOpacity style={$btnDone} onPress={confirmDone}>
-          <Text style={$btnDoneText}>Done</Text>
+          <Text style={$btnDoneText}>Зберегти</Text>
         </TouchableOpacity>
       </View>
 

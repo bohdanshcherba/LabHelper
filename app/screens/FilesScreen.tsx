@@ -75,7 +75,7 @@ export const FilesScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={$fileContainer}>
         {files?.length!==0 ? files?.map((file, i) =>
           <FileItem key={i} index={i} file={file} />)
-          : <Text style={{color:'black', fontSize: 15}}>No files yet... </Text> }
+          : <Text style={{color:'black', fontSize: 15}}>Пусто...</Text> }
       </ScrollView>
 
     </View>
@@ -89,18 +89,7 @@ const $container: ViewStyle = {
   width: "100%",
   backgroundColor: "#ffffff"
 }
-const $header: ViewStyle = {
-  backgroundColor: "#ffffff",
-  paddingTop: 20,
-  paddingBottom: 10,
-  justifyContent: "flex-end",
-  paddingHorizontal: 30,
-  flexDirection: "row"
-}
 
-const $iconSpace: ImageStyle = {
-  marginRight: 15
-}
 const $fileContainer: ViewStyle = {
   width: "100%",
   backgroundColor: "#ffffff",

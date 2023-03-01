@@ -1,14 +1,27 @@
 import React, { useEffect, useState } from "react"
 import { Dimensions, Image, ImageStyle, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native"
+import { Icon } from "./Icon"
+import { colors } from "../theme"
 
 
 const windowWidth = Dimensions.get("window").width
-export const LeukocytesItem = ({ typeImage, value, size = "S", onPress, onLongPress }: {
+export const LeukocytesItem = ({
+                                 typeImage,
+                                 value,
+                                 size = "S",
+                                 onPress,
+                                 onLongPress,
+                                 platelet = false,
+                                 setPlatelet
+
+                               }: {
   size?: "S" | "L",
   typeImage: LeukocyteName,
   value: number,
   onPress?: () => void,
   onLongPress?: () => void,
+  platelet?: boolean,
+  setPlatelet?: (boolean) => void
 }) => {
 
   let itemSizeStyle: ImageStyle = {}
@@ -22,6 +35,36 @@ export const LeukocytesItem = ({ typeImage, value, size = "S", onPress, onLongPr
     }
   }
 
+  if (typeImage === "platelet") {
+    return <TouchableOpacity style={[s.item, itemSizeStyle]}
+                             disabled={size === "S"}
+                             onPress={onPress}
+                             onLongPress={onLongPress}
+                             activeOpacity={1}
+    >
+      {!platelet ?
+        <View style={[s.counter, size === "L" ? { minWidth: 30, height: 45 } : null]}>
+          <Text style={[s.counterText, size === "L" ? { fontSize: 20 } : null]}>{value}</Text>
+        </View> : null
+      }
+      <View style={{ zIndex: 5 }}>
+        {platelet ? <TouchableOpacity activeOpacity={1}
+                                      onLongPress={() => setPlatelet(false)}
+                                      style={s.platelet_cross}>
+          <Image source={require("../../assets/images/cancel.png")} style={s.cross_img} />
+        </TouchableOpacity> : null
+        }
+        {!platelet && size === "L" ? <TouchableOpacity style={s.platelet_btn}
+                                                       onPress={() => setPlatelet(true)}
+                                                       activeOpacity={1}
+        >
+          <Icon icon={"cross_field"} size={15} color={"white"} />
+        </TouchableOpacity> : null}
+        <Image source={imagesRegistry[typeImage]} style={[s.itemImage, itemSizeStyle]} />
+      </View>
+    </TouchableOpacity>
+  }
+
   return <TouchableOpacity style={[s.item, itemSizeStyle]}
                            disabled={size === "S"}
                            onPress={onPress}
@@ -32,6 +75,7 @@ export const LeukocytesItem = ({ typeImage, value, size = "S", onPress, onLongPr
       <Text style={[s.counterText, size === "L" ? { fontSize: 20 } : null]}>{value}</Text>
     </View>
     <Image source={imagesRegistry[typeImage]} style={[s.itemImage, itemSizeStyle]} />
+
   </TouchableOpacity>
 
 }
@@ -39,6 +83,32 @@ export const LeukocytesItem = ({ typeImage, value, size = "S", onPress, onLongPr
 
 const blockWidth = (windowWidth / 2) - 15
 const s = StyleSheet.create({
+  cross_img: {
+    width: "80%",
+    height: "80%"
+  },
+  platelet_cross: {
+
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+
+    zIndex: 5
+  },
+  platelet_btn: {
+    left: 2,
+    position: "absolute",
+    minWidth: 30,
+    height: 45,
+    borderRadius: 12,
+    backgroundColor: colors.palette.secondary100,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10
+  },
   counter: {
     alignItems: "center",
     backgroundColor: "rgba(122,28,188,1)",
@@ -49,7 +119,7 @@ const s = StyleSheet.create({
     minWidth: 12,
     position: "absolute",
     right: 0,
-    zIndex: 10
+    zIndex: 1
   },
   counterText: {
     color: "white",

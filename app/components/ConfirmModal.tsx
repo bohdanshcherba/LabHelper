@@ -1,8 +1,8 @@
 import React from "react"
-import { View, StyleSheet, TouchableOpacity, Modal, Text, SafeAreaView, Alert } from "react-native"
+import { View, StyleSheet, TouchableOpacity, Modal, Text, SafeAreaView } from "react-native"
 
 
-export const ConfirmModal = ({ visible, setVisible, onConfirm, text='Reset'  }) => {
+export const ConfirmModal = ({ visible, setVisible, onConfirm, text='Скинути'  }) => {
 
   return (
     <>
@@ -10,7 +10,7 @@ export const ConfirmModal = ({ visible, setVisible, onConfirm, text='Reset'  }) 
              transparent={true}
              visible={visible}
              onRequestClose={() => {
-               Alert.alert("Modal has been closed.")
+
                setVisible(!visible)
              }}
       >
@@ -18,12 +18,12 @@ export const ConfirmModal = ({ visible, setVisible, onConfirm, text='Reset'  }) 
           <View style={s.centeredView}>
             <View style={s.modalView}>
               <View style={s.modalTextContainer}>
-                <Text style={s.modalText}>Are you sure?</Text>
+                <Text style={s.modalText}>Ви впевнені?</Text>
               </View>
 
               <View style={s.innerContainer}>
                 <TouchableOpacity style={s.modalBtn} onPress={() => setVisible(false)}>
-                  <Text style={s.modalBtnText}>Cancel</Text>
+                  <Text style={s.modalBtnText}>Відміна</Text>
                 </TouchableOpacity>
                 <Text style={{ color: "rgba(0,0,0,0.59)", fontSize: 24 }}>|</Text>
                 <TouchableOpacity style={s.modalBtn} onPress={() => onConfirm()}>
