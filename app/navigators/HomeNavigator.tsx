@@ -46,7 +46,8 @@ export function HomeNavigator() {
 
 
   return (
-    <Tab.Navigator initialRouteName={'Calendar'} screenOptions={tabNavigationOption}>
+    <Tab.Navigator initialRouteName={'Calendar'}
+                   screenOptions={tabNavigationOption}>
       <Tab.Screen name="Gorayev" component={GorayevListScreen} />
       <Tab.Screen name="Leukocytes"
                   component={LeukocytesListScreen}
