@@ -16,7 +16,7 @@ import { Timetable } from "./components/Timetable"
 
 const windowHeight = Dimensions.get("window").height
 
-const maxTranslateY = -windowHeight + 200
+const maxTranslateY = -windowHeight /2
 export const CalendarScreen = ({ navigation }) => {
 
   const sharedY = useSharedValue(0)
@@ -33,9 +33,6 @@ export const CalendarScreen = ({ navigation }) => {
   const scaleY = useDerivedValue(() => {
     return interpolate(sharedY.value, [-windowHeight / 2, maxTranslateY - 1], [windowHeight/2, 200])
   })
-  const size = useDerivedValue(() => {
-    return interpolate(sharedY.value, [-windowHeight / 2, maxTranslateY - 1], [2, 1])
-  })
 
   const context = useSharedValue({ y: 0, scale: 0 })
 
@@ -48,8 +45,8 @@ export const CalendarScreen = ({ navigation }) => {
       sharedY.value = Math.max(sharedY.value, maxTranslateY)
 
     }).onEnd(() => {
-      if (sharedY.value > -windowHeight / 2) {
-        scrollTo(-windowHeight / 3)
+      if (sharedY.value > -windowHeight / 3) {
+        scrollTo(-windowHeight / 4)
       } else {
         scrollTo(maxTranslateY)
       }
@@ -59,9 +56,7 @@ export const CalendarScreen = ({ navigation }) => {
   const bottomSheetStyle = useAnimatedStyle(() => {
     return { transform: [{ translateY: sharedY.value }] }
   })
-  const itemStyle = useAnimatedStyle(() => {
-    return { transform: [{ scaleY: size.value }] }
-  })
+
 
   const calendarResizingStyle = useAnimatedStyle(() => {
 
@@ -72,7 +67,7 @@ export const CalendarScreen = ({ navigation }) => {
   })
 
   useEffect(() => {
-     scrollTo(-windowHeight / 3)
+     scrollTo(-windowHeight / 4)
     //scrollTo(0)
   }, [])
 
@@ -81,8 +76,8 @@ export const CalendarScreen = ({ navigation }) => {
     <View style={$container}>
 
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Animated.View style={[$calendarWrap, calendarResizingStyle]}>
-            <Timetable/>
+        <Animated.View style={$calendarWrap}>
+            <Timetable resize={scaleY}/>
         </Animated.View>
         <GestureDetector gesture={gesture}>
           <Animated.View style={[$bottomSheet, bottomSheetStyle]}>
@@ -110,7 +105,7 @@ const $calendarWrap: ViewStyle = {
 const $bottomSheet: ViewStyle = {
   height: windowHeight,
   width: "100%",
-  backgroundColor: "rgba(159,38,38,0.24)",
+  backgroundColor: "rgb(255,255,255)",
   position: "absolute",
   top: windowHeight,
   borderRadius: 25,

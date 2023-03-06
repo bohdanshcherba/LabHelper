@@ -3,10 +3,16 @@ import { Button, Dimensions, FlatList, ScrollView, StyleSheet, Text, View, ViewS
 
 
 import { colors } from "../../../theme"
-import { ukrainianMonth } from "../../../utils/dateFormat"
+import { getMonths, ukrainianMonth, ukrainianMonthYear } from "../../../utils/dateFormat"
 import { CalendarDays } from "./CalendarDays"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
+import Animated, {
+  interpolate, runOnJS,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withSpring
+} from "react-native-reanimated"
 
 
 const daysNames = [
@@ -21,71 +27,78 @@ const daysNames = [
 
 const windowWidth = Dimensions.get("window").width
 
-export const Timetable = () => {
+const months = getMonths()
+console.log(months.length)
+const Months = ({ months, markedDays,resize }) => {
+  return <>{months.map(days =>
+    <CalendarDays key={Math.random()} days={days} markedDays={markedDays} resize={resize} />)}
+  </>
+}
 
+const MemorizedMonths = React.memo(Months)
 
-  const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [visibleMonthIndex, setVisibleMonthIndex] = useState(2)
-
-
-  const changeDate = (num) => {
-    return new Date(currentMonth.getFullYear(), currentMonth.getMonth() + num, 1)
-
-  }
-
-  const getDaysInMonth = (month) => {
-
-    const firstDayOfMonth = new Date(month.getFullYear(), month.getMonth(), 0)
-    const startingDayOfWeek = firstDayOfMonth.getDay() // Sunday = 0, Monday = 1, etc.
-    const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate()
-    const days: Array<any> = []
-
-    // add empty cells for days before the start of the month
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(null)
-    }
-
-    // add days for the current month
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(new Date(month.getFullYear(), month.getMonth(), i))
-    }
-
-    return days
-  }
-
-  const days = getDaysInMonth(currentMonth)
-
-  const months = [days]
-
-  for (let i = 1; i < 3; i++) {
-    months.push(getDaysInMonth(changeDate(i)))
-    months.unshift(getDaysInMonth(changeDate(-i)))
-  }
-
+export const Timetable = ({resize}) => {
+  const [visibleMonthIndex, setVisibleMonthIndex] = useState(3)
 
   const [markedDays, setMarkedDays] = React.useState([
-    new Date(2023, 2, 1), // March 3, 2023
-    new Date(2023, 3, 10), // March 10, 2023
-    new Date(2023, 4, 17) // March 17, 2023
+    new Date(2023, 2, 1) // March 3, 2023
+
   ])
+  const sharedX = useSharedValue(0)
+  const context = useSharedValue({ x: 0 })
+  const index = useSharedValue(0)
 
-  const onViewableItemsChanged = ({
-                                    viewableItems
-                                  }) => {
-    console.log(viewableItems[0].index)
+  const scrollTo = useCallback((destination: number) => {
+    "worklet"
+    sharedX.value = withSpring(destination, { damping: 50 })
+  }, [])
 
-  }
-  const viewabilityConfigCallbackPairs = useRef([
-    { onViewableItemsChanged }
-  ])
+  const gesture = Gesture.Pan()
+    .onStart(event => {
+      context.value = { x: sharedX.value }
+    })
+    .onChange(event => {
+      sharedX.value = event.translationX + context.value.x
 
+
+    })
+    .onEnd(() => {
+
+      if (context.value.x >= sharedX.value && sharedX.value > -windowWidth * ((months.length / 2) - 1)) {
+        //right
+        index.value = (index.value + 1)
+        runOnJS(setVisibleMonthIndex)(visibleMonthIndex + 1)
+        scrollTo(-windowWidth * index.value)
+      } else {
+        scrollTo(-windowWidth * index.value)
+      }
+      if (context.value.x <= sharedX.value && sharedX.value < windowWidth * ((months.length / 2) - 1)) {
+        //left
+        index.value = (index.value - 1)
+        runOnJS(setVisibleMonthIndex)(visibleMonthIndex - 1)
+        scrollTo(-windowWidth * index.value)
+      } else {
+        scrollTo(-windowWidth * index.value)
+      }
+    })
+
+  useEffect(() => {
+    scrollTo(0)
+    index.value = 0
+  }, [])
+
+  const CalendarStyle = useAnimatedStyle(() => {
+    return { transform: [{ translateX: sharedX.value }] }
+  })
 
   return (
     <View style={s.container}>
       <View style={s.header}>
 
         <View style={s.header_month}>
-          <Text style={s.header_text}>{visibleMonthIndex}</Text>
+          <Text style={s.header_text}>
+            {ukrainianMonthYear(months[visibleMonthIndex][10])}
+          </Text>
         </View>
 
         <View style={s.weekDays}>
@@ -98,31 +111,11 @@ export const Timetable = () => {
 
       </View>
 
-      <FlatList data={months}
-                horizontal
-                pagingEnabled
-                snapToAlignment={"center"}
-                showsHorizontalScrollIndicator={false}
-                initialScrollIndex ={2}
-                renderItem={item =>
-                  <CalendarDays days={item.item} markedDays={markedDays} />}
-        // @ts-ignore
-                viewabilityConfigCallbackPairs={
-                  viewabilityConfigCallbackPairs.current
-                }
-      />
-
-      {/*<Animated.View style={[{flexDirection:'row'}, CalendarStyle]}>*/}
-
-      {/*    <CalendarDays days={getDaysInMonth(changeDate(-1))} markedDays={markedDays}/>*/}
-
-      {/*    <CalendarDays days={days} markedDays={markedDays}/>*/}
-
-      {/*    <CalendarDays days={getDaysInMonth(changeDate(1))} markedDays={markedDays}/>*/}
-
-
-      {/*</Animated.View>*/}
-
+      <GestureDetector gesture={gesture}>
+        <Animated.View style={[{ flexDirection: "row" }, CalendarStyle]}>
+          <MemorizedMonths months={months} markedDays={markedDays} resize={resize} />
+        </Animated.View>
+      </GestureDetector>
     </View>
   )
 }
