@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
+import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { Dimensions, View, ViewStyle, Text } from "react-native"
 
 
@@ -76,9 +76,9 @@ export const CalendarScreen = ({ navigation }) => {
     <View style={$container}>
 
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Animated.View style={$calendarWrap}>
-            <Timetable resize={scaleY}/>
-        </Animated.View>
+        <Timetable resize={scaleY}/>
+
+
         <GestureDetector gesture={gesture}>
           <Animated.View style={[$bottomSheet, bottomSheetStyle]}>
 
@@ -99,7 +99,6 @@ const $container: ViewStyle = {
 }
 const $calendarWrap: ViewStyle = {
 
-  height: 200,
   width: "100%",
 }
 const $bottomSheet: ViewStyle = {

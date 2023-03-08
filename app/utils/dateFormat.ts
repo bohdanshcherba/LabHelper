@@ -35,12 +35,12 @@ export const getDaysInMonth = (month) => {
   return days
 }
 
-export const getMonths = () => {
+export const getMonths = (n) => {
   const currentMonth = getDaysInMonth(currentDay)
 
   const months = [currentMonth]
 
-  for (let i = 1; i < 4; i++) {
+  for (let i = 1; i < n; i++) {
     months.push(getDaysInMonth(changeDate(i)))
     months.unshift(getDaysInMonth(changeDate(-i)))
   }

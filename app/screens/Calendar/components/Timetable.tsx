@@ -4,7 +4,7 @@ import { Button, Dimensions, FlatList, ScrollView, StyleSheet, Text, View, ViewS
 
 import { colors } from "../../../theme"
 import { getMonths, ukrainianMonth, ukrainianMonthYear } from "../../../utils/dateFormat"
-import { CalendarDays } from "./CalendarDays"
+import { Day, Month } from "./CalendarDays"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {
   interpolate, runOnJS,
@@ -13,6 +13,8 @@ import Animated, {
   useSharedValue,
   withSpring
 } from "react-native-reanimated"
+import { FlashList } from "@shopify/flash-list"
+import { CalendarList, LocaleConfig } from "react-native-calendars"
 
 
 const daysNames = [
@@ -24,26 +26,30 @@ const daysNames = [
   "СБ",
   "НД"
 ]
-
-const windowWidth = Dimensions.get("window").width
-
-const months = getMonths()
-console.log(months.length)
-const Months = ({ months, markedDays,resize }) => {
-  return <>{months.map(days =>
-    <CalendarDays key={Math.random()} days={days} markedDays={markedDays} resize={resize} />)}
-  </>
+LocaleConfig.locales.uk = {
+  monthNames: [
+    'Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень',
+    'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень',
+  ],
+  monthNamesShort: [
+    'Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер',
+    'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру',
+  ],
+  dayNames: [
+    'Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П’ятниця', 'Субота',
+  ],
+  dayNamesShort: ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+  today: 'Сьогодні',
 }
+LocaleConfig.defaultLocale = "uk"
+const windowWidth = Dimensions.get("window").width - 10
 
-const MemorizedMonths = React.memo(Months)
+const months = getMonths(12)
+const oneMonth = months[0]
+export const Timetable = ({ resize }) => {
+  const [visibleMonths, setVisibleMonths] = useState(months)
 
-export const Timetable = ({resize}) => {
-  const [visibleMonthIndex, setVisibleMonthIndex] = useState(3)
 
-  const [markedDays, setMarkedDays] = React.useState([
-    new Date(2023, 2, 1) // March 3, 2023
-
-  ])
   const sharedX = useSharedValue(0)
   const context = useSharedValue({ x: 0 })
   const index = useSharedValue(0)
@@ -53,30 +59,50 @@ export const Timetable = ({resize}) => {
     sharedX.value = withSpring(destination, { damping: 50 })
   }, [])
 
+
+  const rightMonth = () => {
+    const copy = [...visibleMonths]
+
+    copy.push(oneMonth)
+    copy.shift()
+    setVisibleMonths(copy)
+
+  }
+
+  const leftMonth = () => {
+    const copy = [...visibleMonths]
+    copy.unshift(oneMonth)
+    copy.pop()
+    setVisibleMonths(copy)
+
+  }
+
+
   const gesture = Gesture.Pan()
     .onStart(event => {
       context.value = { x: sharedX.value }
     })
     .onChange(event => {
       sharedX.value = event.translationX + context.value.x
-
-
     })
     .onEnd(() => {
-
       if (context.value.x >= sharedX.value && sharedX.value > -windowWidth * ((months.length / 2) - 1)) {
         //right
         index.value = (index.value + 1)
-        runOnJS(setVisibleMonthIndex)(visibleMonthIndex + 1)
+        //runOnJS(setVisibleMonthIndex)(visibleMonthIndex + 1)
+        //runOnJS(rightMonth)()
         scrollTo(-windowWidth * index.value)
+
       } else {
         scrollTo(-windowWidth * index.value)
       }
       if (context.value.x <= sharedX.value && sharedX.value < windowWidth * ((months.length / 2) - 1)) {
         //left
         index.value = (index.value - 1)
-        runOnJS(setVisibleMonthIndex)(visibleMonthIndex - 1)
+        //runOnJS(setVisibleMonthIndex)(visibleMonthIndex - 1)
+        // runOnJS(leftMonth)()
         scrollTo(-windowWidth * index.value)
+
       } else {
         scrollTo(-windowWidth * index.value)
       }
@@ -97,11 +123,12 @@ export const Timetable = ({resize}) => {
 
         <View style={s.header_month}>
           <Text style={s.header_text}>
-            {ukrainianMonthYear(months[visibleMonthIndex][10])}
+            2023
           </Text>
         </View>
 
         <View style={s.weekDays}>
+
           {daysNames.map(d => <View key={d} style={s.day_week}>
             <Text style={s.header_day_text}>
               {d}
@@ -110,12 +137,53 @@ export const Timetable = ({resize}) => {
         </View>
 
       </View>
+      <View>
+        <CalendarList
+          horizontal={true}
+          firstDay={1}
+          pagingEnabled
+          dayComponent={({ date }) => <Day date={date} />}
+          renderHeader={(date)=>
+            <View style={s.header}>
+              <Text style={s.header_month_text}> {ukrainianMonthYear(new Date(date))}</Text>
+            </View>
+          }
 
-      <GestureDetector gesture={gesture}>
-        <Animated.View style={[{ flexDirection: "row" }, CalendarStyle]}>
-          <MemorizedMonths months={months} markedDays={markedDays} resize={resize} />
-        </Animated.View>
-      </GestureDetector>
+          theme={{
+            arrowColor: "white",
+            // @ts-ignore
+            "stylesheet.calendar.header": {
+              week: {
+                display: "none"
+              }
+            },
+            "stylesheet.calendar.main": {
+              week: {
+
+                flexDirection: "row",
+                justifyContent: "space-around",
+                borderColor: "rgba(147,147,147,0.18)",
+                borderTopWidth: 1,
+                height: 60
+              }
+            }
+          }}
+        />
+      </View>
+
+      {/*<GestureDetector gesture={gesture}>*/}
+      {/*  <Animated.View style={[{flexDirection:'row'}, CalendarStyle]}>*/}
+      {/*    {visibleMonths.map(month=><Month key={Math.random()} daysAtMonth={month}/>)}*/}
+      {/*  </Animated.View>*/}
+      {/*</GestureDetector>*/}
+      {/*<View style={{width:'100%', justifyContent:'center'}}>*/}
+
+
+      {/*<FlashList horizontal*/}
+      {/*           initialScrollIndex={4}*/}
+      {/*           pagingEnabled*/}
+      {/*           estimatedItemSize={200} data={months} renderItem={({ item }) => <Month daysAtMonth={item}/> }  />*/}
+      {/*</View>*/}
     </View>
   )
 }
@@ -133,7 +201,7 @@ const s = StyleSheet.create({
     height: 50,
     margin: 5,
 
-    width: windowWidth / 7 - 10,
+    width: (windowWidth) / 7 - 10,
     alignItems: "center"
 
   },
@@ -153,7 +221,7 @@ const s = StyleSheet.create({
   header_month: {
     width: "100%",
     alignItems: "center",
-    paddingBottom: 10
+    paddingBottom: 5
   },
   header_text: {
     fontSize: 22,
@@ -161,9 +229,14 @@ const s = StyleSheet.create({
     color: "black"
 
   },
-
+  header_month_text: {
+    fontSize: 16,
+    fontWeight: "300",
+    color: "black"
+  },
   weekDays: {
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: "center"
   },
 
   day_week: {
@@ -179,6 +252,5 @@ const s = StyleSheet.create({
     fontWeight: "300",
     color: "black"
   }
-
 
 })
