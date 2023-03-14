@@ -4,6 +4,7 @@ enum StorageKey {
   CALCULATOR_VALUE = "app-lab-helper/calculator-value",
   FILES = "app-lab-helper/files-value",
   ENTRIES = "app-lab-helper/entries",
+  MARKED_DAYS = "app-lab-helper/marked_days",
 }
 
 export { StorageKey }

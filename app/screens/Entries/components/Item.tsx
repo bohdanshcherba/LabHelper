@@ -6,12 +6,12 @@ import { useAppDispatch } from "../../../store/store"
 
 interface Props {
   item?: any,
-
+  date:string,
   onLongPress:any
 }
 
 export const Item: FC<Props> = (props) => {
-  const { item,  onLongPress } = props
+  const { item, date,  onLongPress } = props
 
   const options = { month: "long", day: "numeric" }
   const locale = "uk-UA"
@@ -20,7 +20,7 @@ export const Item: FC<Props> = (props) => {
 
   const total = item.analyzes.reduce((acc, curr) => acc + curr.value, 0)
 
-  const newDate = new Date(item.date)
+  const newDate = new Date(date)
 
   return <TouchableOpacity style={$item} onLongPress={onLongPress}>
     <View style={{flexDirection:"row", alignItems:"center", }}>
@@ -29,7 +29,7 @@ export const Item: FC<Props> = (props) => {
       </Text>
     </View>
     <View style={{}}>
-      <Text style={{color:'black', fontSize:20}}>
+      <Text style={{color:colors.palette.primary100, fontSize:20}}>
         {item.total}₴
       </Text>
     </View>

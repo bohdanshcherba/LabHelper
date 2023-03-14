@@ -22,7 +22,36 @@ const palette = {
   overlay50: "rgba(25, 16, 21, 0.5)",
 
   eventBg: "#F99393",
+
+  color1: "#E53935",
+  color2: "#F5B0AE",
+  color3: "#C59E1C",
+  color4: "#E8D8A4",
+  color5: "#109a5a",
+  color6: "#A4EDCC",
+  color7: "#1976D3",
+  color8: "#A3C8ED",
+  color9: "#7A1CBC",
+  color10: "#CAA4E4",
+  color11: "#B01E80",
+  color12: "#DFA5CC",
+
 } as const
+
+export const compareColor=(backgroundColor)=>{
+  if(backgroundColor===palette.color1 ||
+    backgroundColor===palette.color3 ||
+    backgroundColor===palette.color5 ||
+    backgroundColor===palette.color7 ||
+    backgroundColor===palette.color9 ||
+    backgroundColor===palette.color11
+  ){
+    return '#fff'
+  }else{
+    return '#000000'
+  }
+
+}
 
 export const colors = {
   /**

@@ -3,17 +3,17 @@ import { DataStatus } from "../../common/enums/enums"
 
 import { addEntre, deleteEntre, loadEntries } from "./action"
 
-import { EntreType } from "../../common/types/Entre.type"
+import { EntreType, EntriesType } from "../../common/types/Entre.type"
 
 
 type State = {
   dataStatus: DataStatus,
-  entries: Array<EntreType>
+  entries: EntriesType
 }
 
 const initialState: State = {
   dataStatus: DataStatus.IDLE,
-  entries: []
+  entries: {}
 }
 
 const reducer = createReducer(initialState, (builder) => {

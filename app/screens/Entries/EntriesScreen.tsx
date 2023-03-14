@@ -5,39 +5,76 @@ import { colors } from "../../theme"
 import { Item } from "./components/Item"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import { deleteEntre, loadEntries } from "../../store/Statistic/action"
+import { compareMonths, getTodayDate, ukrainianMonthDay, ukrainianMonthYear } from "../../utils/dateFormat"
 
 
 export const EntriesScreen = ({ navigation }) => {
-  const entriesDef = useAppSelector(state => state.StatisticReducer.entries)
+  const entries = useAppSelector(state => state.StatisticReducer.entries)
   const dispatch = useAppDispatch()
-  const [entries, SetEntries] = useState(entriesDef)
+
   const [modal, setModal] = useState(false)
   const [indexForConfirm, setIndexForConfirm] = useState(-1)
 
   useEffect(() => {
     dispatch(loadEntries([]))
   }, [])
-  useEffect(() => {
-    SetEntries(entriesDef)
-  }, [entriesDef])
 
+  const keys = Object.keys(entries)
+
+  const countTotalForMonth = (date) => {
+    const neededMonth = date[5] + date[6]
+    let suma = 0
+    keys.forEach((key) => {
+      const keyMonth = key[5] + key[6]
+      if (keyMonth === neededMonth) {
+        // @ts-ignore
+        suma += entries[key].total
+      }
+    })
+    return suma
+  }
 
   return (
     <View style={$screenView}>
-      <ConfirmModal text={'Delete'}  visible={modal} setVisible={setModal} onConfirm={()=>dispatch(deleteEntre(indexForConfirm))} />
+      <ConfirmModal text={"Видалити"} visible={modal} setVisible={setModal}
+                    onConfirm={() => dispatch(deleteEntre(keys[indexForConfirm]))} />
       <View style={$header}>
-        <Text style={$date}>21 Лютого</Text>
+
       </View>
-      <ScrollView>
+      <View style={$itemAddContainer}>
         <TouchableOpacity style={$itemAdd} onPress={() => navigation.navigate("NewEntries")}>
-          <Icon icon={"plus"} size={38} />
+          <Icon icon={"plus"} color={colors.palette.primary200} size={70} />
         </TouchableOpacity>
-        {entries?entries.map((el,index) =>
-          <Item key={index} item={el} onLongPress={()=> {
-            setIndexForConfirm(index)
-            setModal(true)
-          }
-          }/>):null}
+      </View>
+
+      <ScrollView>
+
+        {keys ? keys.map((el, index) =>
+          < >
+            {compareMonths(keys[index], keys[index - 1]) ?
+              <View style={{
+                marginHorizontal: 32,
+                marginBottom:5,
+                flexDirection:'row',
+                alignItems:'center',
+                justifyContent:'space-between'
+              }}>
+                <Text style={{ color: "black", fontSize: 18, fontWeight: "300" }}>
+                  {ukrainianMonthYear(new Date(keys[index]))}
+                </Text>
+                <Text style={{ color: "black", fontSize: 18, fontWeight: "300" }}>
+                  {countTotalForMonth(keys[index])}₴</Text>
+              </View> : null}
+            <Item key={index}
+                  date={el}
+                  item={entries[el]}
+                  onLongPress={() => {
+                    setIndexForConfirm(index)
+                    setModal(true)
+                  }
+                  } />
+          </>
+        ) : null}
 
       </ScrollView>
 
@@ -47,7 +84,8 @@ export const EntriesScreen = ({ navigation }) => {
 
 const $screenView: ViewStyle = {
   flex: 1,
-  backgroundColor: colors.background
+  backgroundColor: colors.background,
+  paddingBottom: 72
 }
 const $header: ViewStyle = {
   backgroundColor: colors.background,
@@ -63,14 +101,16 @@ const $date: TextStyle = {
   fontWeight: "300",
   fontSize: 22
 }
-const $itemAdd: ViewStyle = {
 
-  marginHorizontal: 10,
-  height: 60,
+const $itemAddContainer: ViewStyle = {
+  position: "absolute",
+  zIndex: 10,
+  bottom: 0,
+  paddingVertical: 5,
+  width: "100%",
+  backgroundColor: "white",
   alignItems: "center",
-  justifyContent: "center",
-  borderWidth: 1,
-  borderColor: colors.text,
-  borderRadius: 20,
-  marginBottom: 10
+  borderTopWidth: 1,
+  borderColor: "rgba(0,0,0,0.07)"
 }
+const $itemAdd: ViewStyle = {}

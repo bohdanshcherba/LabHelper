@@ -1,11 +1,14 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { BackHandler, ViewStyle } from "react-native"
-import { GorayevListScreen,
+import {
+  GorayevListScreen,
   LeukocytesListScreen, EntriesScreen,
-   FilesScreen } from "../screens"
+  FilesScreen, CalendarScreen
+} from "../screens"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Icon } from "../components"
-import { CalendarScreen } from "../screens/Calendar/CalendarScreen"
+import { useAppDispatch } from "../store/store"
+import { loadEntries } from "../store/Statistic/action"
 
 
 const Tab = createBottomTabNavigator()
@@ -44,9 +47,8 @@ export function HomeNavigator() {
   })
 
 
-
   return (
-    <Tab.Navigator initialRouteName={'Calendar'}
+    <Tab.Navigator initialRouteName={"Gorayev"}
                    screenOptions={tabNavigationOption}>
       <Tab.Screen name="Gorayev" component={GorayevListScreen} />
       <Tab.Screen name="Leukocytes"

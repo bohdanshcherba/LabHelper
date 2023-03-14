@@ -1,10 +1,12 @@
 import React, { useState } from "react"
-import { Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
+// eslint-disable-next-line react-native/split-platform-components
+import { Text, TextStyle, ToastAndroid, TouchableOpacity, View, ViewStyle } from "react-native"
 import { colors } from "../../theme"
 import { DatePicker, Icon, PopupColorPicker } from "../../components"
 import { Analyzes } from "./components/Analyzes"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import { addEntre } from "../../store/Statistic/action"
+import { formatDateForKey, getTodayDate } from "../../utils/dateFormat"
 
 
 export const NewEntriesScreen = ({ navigation }) => {
@@ -17,34 +19,46 @@ export const NewEntriesScreen = ({ navigation }) => {
     { title: "Сеча", value: 0 },
     { title: "Кал", value: 0 }
   ])
-  const [date, setDate] = useState(new Date())
+  const [date, setDate] = useState(getTodayDate())
   const [color, pickColor] = useState("#7A1CBCFF")
   const [popupVisible, setPopupVisible] = useState(false)
   const dispatch = useAppDispatch()
 
   const confirmDone = () => {
+    const key = formatDateForKey(date)
+    const exist = key in entries
 
-    const exist = entries.some(el=>new Date(el.date).toDateString() === date.toDateString())
-
-    if(total !== 0 && !exist) {
+    if (total !== 0 && !exist) {
       dispatch(addEntre({
-        date:date,
-        color:color,
-        analyzes:counts,
-        total:total
+        date: date,
+        entre: {
+          analyzes: counts,
+          total: total
+        }
       }))
       navigation.goBack(null)
+    }
+    else{
+      exist ? ToastAndroid.showWithGravity(
+        'На цю дату вже є запис',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      ) : ToastAndroid.showWithGravity(
+        'Має бути хоча б один аналіз',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      )
     }
   }
 
   return (
     <View style={$screenView}>
-      <PopupColorPicker pickColor={pickColor} visible={popupVisible} setVisible={setPopupVisible}/>
+      <PopupColorPicker pickColor={pickColor} visible={popupVisible} setVisible={setPopupVisible} />
       <View style={$header}>
         <Icon icon={"cross"} size={32} onPress={() => navigation.goBack(null)} />
         <DatePicker date={date} setDate={setDate} />
-        <TouchableOpacity style={[$pickColor, {backgroundColor:color}]}
-                          onPress={()=>setPopupVisible(true)}/>
+        <TouchableOpacity style={[$pickColor, { backgroundColor: color }]}
+                          onPress={() => setPopupVisible(true)} />
       </View>
       <Analyzes value={total}
                 counts={counts}

@@ -1,11 +1,15 @@
 export type Analyze = {
-  title:string,
+  title: string,
   value: number,
 }
 
 export type EntreType = {
-  date: Date,
-  color: string,
-  total: number,
-  analyzes: Array<Analyze>
+  markingColor?: { name: string, color: string },
+  total?: number,
+  analyzes?: Array<Analyze>
+
+}
+
+export type EntriesType = {
+  [key: string]: EntreType
 }
