@@ -6,13 +6,17 @@ import { StorageKey } from "../../common/enums/enums"
 import { EntreType } from "../../common/types/Entre.type"
 import { formatDateForKey, getTodayDate } from "../../utils/dateFormat"
 import { loadEntries } from "../Statistic/action"
+import { formatDataForWidget } from "../../utils/calendar"
 
 export const saveMarkedDays = createAsyncThunk<any, any, AsyncThunkConfig>(ActionType.SAVE_CALENDAR,
   async (payload, { extra, getState }) => {
-    const { storage } = extra
+    const { storage,sharedStorage } = extra
     const calendar = getState().CalendarReducer.calendar
 
     await storage.save(StorageKey.MARKED_DAYS, calendar)
+    const result = formatDataForWidget(calendar)
+
+    await sharedStorage.save({ 'marked': result })
 
     return calendar
   })

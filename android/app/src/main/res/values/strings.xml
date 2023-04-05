@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LabHelper</string>
+    <string name="appwidget_text">Calendar</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">Calendar</string>
+    <string name="back"><![CDATA[▽]]></string>
+    <string name="forward"><![CDATA[△]]></string>
 </resources>

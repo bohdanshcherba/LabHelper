@@ -32,9 +32,9 @@ const palette = {
   color7: "#1976D3",
   color8: "#A3C8ED",
   color9: "#7A1CBC",
-  color10: "#CAA4E4",
-  color11: "#B01E80",
-  color12: "#DFA5CC",
+  color10:"#CAA4E4",
+  color11:"#B01E80",
+  color12:"#DFA5CC",
 
 } as const
 
