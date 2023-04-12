@@ -78,6 +78,13 @@ export const GorayevCounterScreen = ({ navigation, route }) => {
 
   }
 
+  const multiply = () => {
+
+
+    setValue(value *5)
+
+  }
+
 
   return (
     <View style={$container}>
@@ -116,9 +123,12 @@ export const GorayevCounterScreen = ({ navigation, route }) => {
                 style={{ marginRight: 15 }}
                 onPress={() => setModal(true)}
           />
-          <Icon icon={"calculator"} size={35} onPress={()=>setCalculatorVisible(true)} />
+          <Icon icon={"calculator"} size={35} onPress={() => setCalculatorVisible(true)} />
         </View>
       </View>
+      <TouchableOpacity style={$btnMultiply} onPress={multiply}>
+        <Text style={{ color: "black" }}>x 5</Text>
+      </TouchableOpacity>
       <TouchableWithoutFeedback onPress={increment} disabled={isEdit}>
         <View style={$counterContainer}>
           <Text style={$ModalText}>{value}</Text>
@@ -127,7 +137,19 @@ export const GorayevCounterScreen = ({ navigation, route }) => {
     </View>
   )
 }
-
+const $btnMultiply: ViewStyle = {
+  position: "absolute",
+  top: 70,
+  right: 20,
+  borderColor: "black",
+  borderWidth: 1,
+  borderRadius: 5,
+  zIndex: 10,
+  width: 35,
+  height:35,
+  alignItems:'center',
+  justifyContent:'center'
+}
 const $header: ViewStyle = {
   position: "absolute",
   width: "100%",

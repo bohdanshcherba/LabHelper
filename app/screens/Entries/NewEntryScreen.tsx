@@ -20,8 +20,7 @@ export const NewEntriesScreen = ({ navigation }) => {
     { title: "Кал", value: 0 }
   ])
   const [date, setDate] = useState(getTodayDate())
-  const [color, pickColor] = useState("#7A1CBCFF")
-  const [popupVisible, setPopupVisible] = useState(false)
+
   const dispatch = useAppDispatch()
 
   const confirmDone = () => {
@@ -53,12 +52,11 @@ export const NewEntriesScreen = ({ navigation }) => {
 
   return (
     <View style={$screenView}>
-      <PopupColorPicker pickColor={pickColor} visible={popupVisible} setVisible={setPopupVisible} />
+
       <View style={$header}>
         <Icon icon={"cross"} size={32} onPress={() => navigation.goBack(null)} />
         <DatePicker date={date} setDate={setDate} />
-        <TouchableOpacity style={[$pickColor, { backgroundColor: color }]}
-                          onPress={() => setPopupVisible(true)} />
+        <TouchableOpacity style={$pickColor} />
       </View>
       <Analyzes value={total}
                 counts={counts}
@@ -93,7 +91,8 @@ const $header: ViewStyle = {
 const $pickColor: ViewStyle = {
   height: 32,
   width: 32,
-  borderRadius: 50
+  borderRadius: 50,
+  backgroundColor:'white'
 }
 
 const $btnDone: ViewStyle = {

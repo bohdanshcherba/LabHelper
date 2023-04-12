@@ -7,14 +7,12 @@ import {
 } from "../screens"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Icon } from "../components"
-import { useAppDispatch } from "../store/store"
-import { loadEntries } from "../store/Statistic/action"
 
 
 const Tab = createBottomTabNavigator()
 
 export function HomeNavigator() {
-
+  
   const tabNavigationOption = ({ route }) => ({
 
     tabBarShowLabel: false,

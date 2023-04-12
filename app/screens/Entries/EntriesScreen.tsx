@@ -50,22 +50,24 @@ export const EntriesScreen = ({ navigation }) => {
       <ScrollView>
 
         {keys ? keys.map((el, index) =>
-          < >
+          <View key={Math.random()}>
             {compareMonths(keys[index], keys[index - 1]) ?
-              <View style={{
+              <View
+
+                style={{
                 marginHorizontal: 32,
                 marginBottom:5,
                 flexDirection:'row',
                 alignItems:'center',
                 justifyContent:'space-between'
               }}>
-                <Text style={{ color: "black", fontSize: 18, fontWeight: "300" }}>
+                <Text style={{ color: colors.palette.primary200, fontSize: 18, fontWeight: "300" }}>
                   {ukrainianMonthYear(new Date(keys[index]))}
                 </Text>
                 <Text style={{ color: "black", fontSize: 18, fontWeight: "300" }}>
                   {countTotalForMonth(keys[index])}₴</Text>
               </View> : null}
-            <Item key={index}
+            <Item
                   date={el}
                   item={entries[el]}
                   onLongPress={() => {
@@ -73,7 +75,7 @@ export const EntriesScreen = ({ navigation }) => {
                     setModal(true)
                   }
                   } />
-          </>
+          </View>
         ) : null}
 
       </ScrollView>

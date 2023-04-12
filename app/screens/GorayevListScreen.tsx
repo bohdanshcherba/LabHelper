@@ -8,6 +8,8 @@ import { loadGorayevItems, saveGorayevItems, updateGorayevItems } from "../store
 
 export const GorayevListScreen = ({ navigation }) => {
 
+
+
   const { gorayevItems } = useAppSelector((state) => state.AppReducer)
   const dispatch = useAppDispatch()
 

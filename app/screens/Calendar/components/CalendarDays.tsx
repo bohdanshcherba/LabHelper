@@ -1,18 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react"
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import Animated, {
-  interpolate, runOnJS,
-  useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-  withSpring
-} from "react-native-reanimated"
-import { month } from "react-native-calendars/src/dateutils"
+import React, { useEffect, useState } from "react"
+import { Dimensions, StyleSheet, Text, TouchableOpacity } from "react-native"
+
 import { useAppDispatch, useAppSelector } from "../../../store/store"
 import { getMarkColor, getMarkingMode, isMarkDay, markDay, setSelectedDay } from "../../../store/Calendar/action"
-import { ukrainianMonthYear } from "../../../utils/dateFormat"
-import { colors, compareColor } from "../../../theme"
-
+import {  compareColor } from "../../../theme"
 
 const windowWidth = Dimensions.get("window").width
 
@@ -69,6 +60,7 @@ export const Day = ({ date, today }) => {
       borderRadius: 20,
     } : null
 
+
   return (
     <TouchableOpacity
       activeOpacity={1}
@@ -83,42 +75,6 @@ export const Day = ({ date, today }) => {
   )
 }
 
-
-const Week = ({ daysAtWeek }) => {
-
-  return <View style={{
-    flexDirection: "row",
-    height: 60,
-    width: windowWidth - 10,
-    borderColor: "rgba(147,147,147,0.18)",
-    borderTopWidth: 1
-  }}>
-    {daysAtWeek.map(day => <MemoDay key={Math.random()} date={day} today={""}
-    />)}
-  </View>
-}
-
-const MemoWeek = React.memo(Week)
-
-export const Month = ({ daysAtMonth }) => {
-
-  const subarrays: Array<any> = []
-  for (let i = 0; i < daysAtMonth.length; i += 7) {
-    subarrays.push(daysAtMonth.slice(i, i + 7))
-  }
-
-  return (
-    <View style={{ justifyContent: "center", marginTop: 10 }}>
-      <Text style={s.header_text}> {ukrainianMonthYear(daysAtMonth[10])}</Text>
-      {subarrays.map(days => <MemoWeek key={Math.random()}
-                                       daysAtWeek={days}
-
-
-      />)}
-    </View>
-  )
-}
-const MemoDay = React.memo(Day)
 const s = StyleSheet.create({
 
   day: {

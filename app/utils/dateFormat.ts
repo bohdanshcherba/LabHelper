@@ -17,17 +17,19 @@ export const ukrainianMonthYear = (date) => {
   return date.toLocaleDateString("uk-UA", options).replace(/^./, (c) => c.toUpperCase())
 }
 
-const currentDay = new Date()
-const changeDate = (num) => {
-  return new Date(currentDay.getFullYear(), currentDay.getMonth() + num, 1)
+export const ukrainianMonthDate = (date) => {
+  const options = { month: "long", timeZone: "UTC" }
 
+  return date.toLocaleDateString("uk-UA", options).replace(/^./, (c) => c.toUpperCase())
 }
 
-export const getDaysInMonth = (month) => {
 
-  const firstDayOfMonth = new Date(month.getFullYear(), month.getMonth(), 0)
+
+export const getDaysInMonth = (monthDate: Date) => {
+
+  const firstDayOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 0)
   const startingDayOfWeek = firstDayOfMonth.getDay() // Sunday = 0, Monday = 1, etc.
-  const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate()
+  const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate()
   const days: Array<any> = []
 
   // add empty cells for days before the start of the month
@@ -37,20 +39,23 @@ export const getDaysInMonth = (month) => {
 
   // add days for the current month
   for (let i = 1; i <= daysInMonth; i++) {
-    days.push(new Date(month.getFullYear(), month.getMonth(), i))
+    days.push(new Date(monthDate.getFullYear(), monthDate.getMonth(), i))
   }
 
   return days
 }
 
-export const getMonths = (n) => {
-  const currentMonth = getDaysInMonth(currentDay)
+export const getMonthsInYear = (year: number) => {
 
-  const months = [currentMonth]
+  const firstMonthOfYear = new Date(year, 0, 1)
 
-  for (let i = 1; i < n; i++) {
-    months.push(getDaysInMonth(changeDate(i)))
-    months.unshift(getDaysInMonth(changeDate(-i)))
+  const months: Array<any> = []
+
+  for (let i = 0; i < 12; i++) {
+
+    months.push(getDaysInMonth(firstMonthOfYear))
+    firstMonthOfYear.setMonth(firstMonthOfYear.getMonth()+1)
+
   }
   return months
 }
@@ -70,10 +75,9 @@ export const formatDateForKey = (date: Date): string => {
   return year + "-" + month + "-" + day
 }
 
-export const compareMonths = (date1: string, date2:string) => {
+export const compareMonths = (date1: string, date2: string) => {
 
 
-
-  return new Date(date1).getMonth()!== new Date(date2).getMonth()
+  return new Date(date1).getMonth() !== new Date(date2).getMonth()
 }
 

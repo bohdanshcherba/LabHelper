@@ -81,7 +81,7 @@ export const CalendarScreen = ({ navigation }) => {
     <View style={$container}>
 
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <MemoTimetable />
+        <MemoTimetable navigation={navigation}/>
         <GestureDetector gesture={gesture}>
           <Animated.View style={[$bottomSheet, bottomSheetStyle]}>
             {isMarking ? <ColorPicker /> : <DayInfo />}

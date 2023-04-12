@@ -1,26 +1,25 @@
-import React, { useCallback, useEffect, useRef, useState } from "react"
-import { Button, Dimensions, FlatList, ScrollView, StyleSheet, Text, View, ViewStyle } from "react-native"
+import React, { useState } from "react"
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
 
 
 import { getTodayDate, ukrainianMonthYear } from "../../../utils/dateFormat"
-import { Day, Month } from "./CalendarDays"
+import { Day } from "./CalendarDays"
 
-import { CalendarList, LocaleConfig } from "react-native-calendars"
+import { CalendarList } from "react-native-calendars"
+import {daysNames} from "../../../common/constants/calendar"
 
-
-const daysNames = [
-  "ПН",
-  "ВТ",
-  "СР",
-  "ЧТ",
-  "ПТ",
-  "СБ",
-  "НД"
-]
 
 const windowWidth = Dimensions.get("window").width - 10
 
-const now = getTodayDate()
+
+const now = new Date()
+now.setHours(3, 0, 0, 0)
 
 const MyCalendar = ({ setVisibleMonth }) => {
   return <CalendarList
@@ -57,17 +56,17 @@ const MyCalendar = ({ setVisibleMonth }) => {
   />
 }
 
-export const Timetable = () => {
+export const Timetable = ({navigation}) => {
   const [visibleMonth, setVisibleMonth] = useState(now)
 
   return (
     <View style={s.container}>
       <View style={s.header}>
-        <View style={s.header_month}>
+        <TouchableOpacity style={s.header_month} onPress={()=>navigation.navigate("YearCalendar")}>
           <Text style={s.header_text}>
             {ukrainianMonthYear(visibleMonth)}
           </Text>
-        </View>
+        </TouchableOpacity>
         <View style={s.weekDays}>
           {daysNames.map(d => <View key={d} style={s.day_week}>
             <Text style={s.header_day_text}>

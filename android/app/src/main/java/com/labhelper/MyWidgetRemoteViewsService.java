@@ -8,6 +8,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -71,17 +72,22 @@ public class MyWidgetRemoteViewsService extends RemoteViewsService {
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.my_item_layout);
             String date = daysInMonth.get(position);
 
-            try {
-                if(date.length()<2){
-                    rv.setTextViewText(R.id.text_view,"" );
+            if (DateManager.isToday(date)) {
 
-                }else{
-                    rv.setTextViewText(R.id.text_view,DateManager.getDayFromDate(date));
+                rv.setViewVisibility(R.id.text_view, View.GONE);
+                rv.setViewVisibility(R.id.text_view_today,View.VISIBLE);
+
+                rv.setTextViewText(R.id.text_view_today, DateManager.getDayFromDate(date));
+
+
+            } else {
+                if (date.length() < 2) {
+                    rv.setTextViewText(R.id.text_view, "");
+
+                } else {
+                    rv.setTextViewText(R.id.text_view, DateManager.getDayFromDate(date));
+
                 }
-
-            }
-            catch (Exception ex){
-                Log.d("ERR", String.valueOf(ex));
             }
             for (String[] day : marked) {
                 if (Objects.equals(daysInMonth.get(position), day[0])) {

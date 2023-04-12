@@ -1,5 +1,6 @@
 package com.labhelper;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -13,6 +14,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import androidx.annotation.RequiresApi;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -52,6 +55,9 @@ public class Widget extends AppWidgetProvider {
 
         views.setOnClickPendingIntent(R.id.btn_back, getPendingSelfIntent(context, PREV_MOON_CLICKED));
         views.setOnClickPendingIntent(R.id.btn_forward, getPendingSelfIntent(context, NEXT_MOON_CLICKED));
+
+        // open app
+        views.setOnClickPendingIntent(R.id.monthYearText, createLaunchIntent(context));
 
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -138,6 +144,21 @@ public class Widget extends AppWidgetProvider {
         }
 
         return PendingIntent.getBroadcast(context, 0, clickIntent, pendingFlags);
+    }
+
+
+    private static PendingIntent createLaunchIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE);
+        } else {
+            return PendingIntent.getActivity(context, 0, intent, 0);
+        }
+
     }
 
     @Override

@@ -1,5 +1,5 @@
 import React from "react"
-import { View, ViewStyle, Text, TouchableOpacity, TextStyle, Dimensions } from "react-native"
+import { View, ViewStyle, Text, TouchableOpacity, TextStyle, Dimensions, TextInput, StyleSheet } from "react-native"
 
 import { useAppDispatch, useAppSelector } from "../../../store/store"
 import { setIsMarkingMode, setMarkColor } from "../../../store/Calendar/action"
@@ -23,21 +23,62 @@ export const DayInfo = () => {
         </TouchableOpacity>
       </View>
       <View>
-        <Text style={{color:'black', fontSize:20,}}> {selectedDay?.dayInfo ? selectedDay.dayInfo.total +'₴' : 'Немає інформації' } </Text>
+        {selectedDay?.dayInfo ?
+          <>
+            <View style={$total}>
+
+              <Text style={$value}>{selectedDay.dayInfo.total + "₴"}</Text>
+            </View>
+
+            {
+              selectedDay.dayInfo.analyzes?.map((item, i) => {
+                return <View style={$analyzes} key={i}>
+                  <Text style={$placeholder}>{item.title}</Text>
+                  <Text style={$value}>{item.value}</Text>
+                </View>
+              })
+            }
+
+
+          </> : <View style={{ width: "100%", alignItems: "center" }}>
+            <Text style={{
+              fontSize: 20,
+              color: "rgba(0,0,0,0.6)"
+            }}>Немає інформації</Text>
+          </View>}
       </View>
-
-
     </View>
   )
 }
 
 //export const MemoColorPicker = React.memo(ColorPicker)
 
+const $analyzes: ViewStyle = {
+  width: "100%",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  paddingHorizontal: 25
+}
+const $total: ViewStyle = {
+  width: "100%",
+  flexDirection: "row",
+  justifyContent: "center",
+  paddingHorizontal: 25,
+  marginVertical: 8
+}
 
+const $placeholder: TextStyle = {
+  fontSize: 25,
+  color: "black"
+}
+const $value: TextStyle = {
+  fontSize: 25,
+  color: "black"
+}
 
 const $container: ViewStyle = {
-  width: "100%",
-  alignItems: "center"
+  width: "100%"
+
 }
 
 

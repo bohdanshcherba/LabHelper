@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 public class DateManager {
     public LocalDate selectedDate;
@@ -56,6 +57,12 @@ public class DateManager {
         monthNameUkrainian = monthNameUkrainian.substring(0, 1).toUpperCase() + monthNameUkrainian.substring(1);
 
         return monthNameUkrainian;
+    }
+    public static boolean isToday(String strDate){
+
+        LocalDate now = LocalDate.now();
+
+        return Objects.equals(now.toString(), strDate);
     }
 
     public void previousMonthAction(RemoteViews views)
