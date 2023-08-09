@@ -54,7 +54,7 @@ export const Day = ({ date, today }) => {
   const todayStyle = today.getTime() === new Date(date.dateString).getTime() ?
     {
       color: 'white',
-      backgroundColor: 'rgba(0,0,0,0.68)',
+      backgroundColor: 'rgba(0,0,0,0.25)',
       paddingHorizontal:4,
       paddingVertical:2,
       borderRadius: 20,

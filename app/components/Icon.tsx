@@ -102,6 +102,8 @@ export const iconRegistry = {
   caret_forward_outline: require('../../assets/icons/caret_forward_outline.png'),
   edit: require('../../assets/icons/edit.png'),
   trash: require('../../assets/icons/trash.png'),
+  line: require('../../assets/icons/line.png'),
+  cross_solution: require('../../assets/icons/cross_solution.png'),
 }
 
 const $imageStyle: ImageStyle = {

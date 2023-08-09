@@ -16,7 +16,12 @@ export const emptyItem = {
     { name: "mature", value: 0 },
     { name: "lymphocyte", value: 0 },
     { name: "platelet", value: 0 }
-  ]
+  ],
+
+  SOE: { A: '', B: '', C: 100, X: 0 },
+  NST: { A: '', B: '', C: 100, X: 0 },
+  KP: { A: '', B: '', C: 3, X: 0 },
+  TRO: { A: '', B: '', C: 5, X: 0 },
 }
 
 export const loadLeukocytesBlocks = createAsyncThunk<any, any, AsyncThunkConfig>(ActionType.LOAD_ITEMS,
@@ -50,15 +55,14 @@ export const updateLeukocytesBlocks = createAsyncThunk<any, number, AsyncThunkCo
     let items = getState().LeukocytesReducer.leukocytesBlocks
     const { storage } = extra
     if (number > items.length) {
-      const emptyItems = Array(number-items.length).fill(emptyItem)
+      const emptyItems = Array(number - items.length).fill(emptyItem)
       // @ts-ignore
 
       items = [...items, ...emptyItems]
 
     } else if (number < items.length) {
       items = items.slice(0, number)
-    }
-    else {
+    } else {
       items = Array(items.length).fill(emptyItem)
     }
 

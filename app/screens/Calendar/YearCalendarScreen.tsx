@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     paddingHorizontal: 15,
+
   },
   year: {
     fontSize: 20,

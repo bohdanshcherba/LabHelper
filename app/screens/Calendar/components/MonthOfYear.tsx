@@ -6,7 +6,7 @@ import { daysNamesShort } from "../../../common/constants/calendar"
 import { compareColor } from "../../../theme"
 
 export const MonthOfYear = ({ month, marked }) => {
-
+  console.log(marked)
   return (
     <View  style={styles.month}>
       <Text style={styles.monthTitle}>{ukrainianMonthDate(month[10])}</Text>

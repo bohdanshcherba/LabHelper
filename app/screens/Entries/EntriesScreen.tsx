@@ -61,10 +61,10 @@ export const EntriesScreen = ({ navigation }) => {
                 alignItems:'center',
                 justifyContent:'space-between'
               }}>
-                <Text style={{ color: colors.palette.primary200, fontSize: 18, fontWeight: "300" }}>
+                <Text style={{ color: colors.palette.primary200, fontSize: 20, fontWeight: "500" }}>
                   {ukrainianMonthYear(new Date(keys[index]))}
                 </Text>
-                <Text style={{ color: "black", fontSize: 18, fontWeight: "300" }}>
+                <Text style={{ color: colors.palette.primary100, fontSize: 20, fontWeight: "500" }}>
                   {countTotalForMonth(keys[index])}₴</Text>
               </View> : null}
             <Item

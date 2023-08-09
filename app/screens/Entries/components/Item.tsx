@@ -29,7 +29,7 @@ export const Item: FC<Props> = (props) => {
       </Text>
     </View>
     <View style={{}}>
-      <Text style={{color:colors.palette.primary100, fontSize:20}}>
+      <Text style={{color:colors.palette.neutral900, fontSize:20}}>
         {item.total}₴
       </Text>
     </View>

@@ -11,18 +11,20 @@ import {
   View,
   ViewStyle
 } from "react-native"
-import { ConfirmModal, Icon } from "../components"
-import { CalculatorModal } from "../components/CalculatorModal"
-import { LeukocytesItem } from "../components/LeukocyteItem"
-import { LeukocytesBlockType } from "../common/types/Leukocytes.type"
-import { useAppDispatch } from "../store/store"
-import { updateLeukocytesBlock } from "../store/LeukocytesBlocks/action"
+import { ConfirmModal, Icon } from "../../components"
+import { CalculatorModal } from "../../components/CalculatorModal"
+import { LeukocytesItem } from "../../components/LeukocyteItem"
+import { LeukocytesBlockType } from "../../common/types/Leukocytes.type"
+import { useAppDispatch } from "../../store/store"
+import { updateLeukocytesBlock } from "../../store/LeukocytesBlocks/action"
 import Sound from "react-native-sound"
-import { saveCalculatorValue } from "../store/app/action"
+import { saveCalculatorValue } from "../../store/app/action"
+import { colors } from "../../theme"
+import { FormulaBlock } from "./components/FormulaBlock"
 
 
-const sound = require("../../assets/zvuk41.mp3")
-const notifySound = require("../../assets/notify.wav")
+const sound = require("../../../assets/zvuk41.mp3")
+const notifySound = require("../../../assets/notify.wav")
 const notify = new Sound(notifySound)
 Sound.setCategory("Playback", true)
 Sound.setMode("VideoChat")
@@ -32,6 +34,7 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
   const ding2 = new Sound(sound)
 
   const { item, index } = route.params
+
   const dispatch = useAppDispatch()
 
   const [modal, setModal] = useState(false)
@@ -41,6 +44,10 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
   const [leukocytesArr, setLeukocytes] = useState([...item.leukocytes])
   const [total, setTotal] = useState(item.total)
   const [platelet, setPlatelet] = useState(item.platelet)
+  const [SOE, setSoe] = useState<{ A: number, B: number, C: number, X: number }>(item.SOE)
+  const [NST, setNST] = useState<{ A: number, B: number, C: number, X: number }>(item.NST)
+  const [KP, setKP] = useState<{ A: number, B: number, C: number, X: number }>(item.KP)
+  const [TRO, setTRO] = useState<{ A: number, B: number, C: number, X: number }>(item.TRO)
 
   useEffect(() => {
     ding.setSpeed(0.79)
@@ -54,7 +61,11 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
       title: text,
       total: total,
       leukocytes: leukocytesArr,
-      platelet:platelet
+      platelet: platelet,
+      SOE: SOE,
+      NST:NST,
+      KP:KP,
+      TRO:TRO,
     }
 
     dispatch(updateLeukocytesBlock({ item: newItem, index }))
@@ -71,7 +82,7 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBack)
     return () => BackHandler.removeEventListener("hardwareBackPress", handleBack)
-  }, [leukocytesArr, text])
+  }, [leukocytesArr, text, SOE, NST, KP,TRO])
 
   useEffect(() => {
     Keyboard.addListener("keyboardDidHide", () => setIsEdit(false))
@@ -147,6 +158,11 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
     setTotal(0)
     setText("")
     setPlatelet(false)
+    setSoe({ A: 0, B: 0, C: 100, X: 0 })
+    setNST({ A: 0, B: 0, C: 100, X: 0 })
+    setKP({ A: 0, B: 0, C: 3, X: 0 })
+    setTRO({ A: 0, B: 0, C: 5, X: 0 })
+    saveItem()
   }
 
   return (
@@ -196,7 +212,11 @@ export const LeukocytesCounterScreen = ({ navigation, route }) => {
                      placeholder={"Нотатка"} />
         </TouchableOpacity>
       </View>
-
+      <FormulaBlock SOE={SOE} setSOE={setSoe}
+                    NST={NST} setNST={setNST}
+                    KP={KP} setKP={setKP}
+                    TRO={{ ...TRO, B:leukocytesArr[6].value }} setTRO={setTRO}
+      />
     </SafeAreaView>
   )
 }
@@ -256,7 +276,6 @@ const $valueContainer: ViewStyle = {
   justifyContent: "center"
 
 }
-
 const $valueText: TextStyle = {
   width: "90%",
 

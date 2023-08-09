@@ -2,7 +2,7 @@ import React from "react"
 import { View, ViewStyle, Text, TouchableOpacity, TextStyle, Dimensions, TextInput, StyleSheet } from "react-native"
 
 import { useAppDispatch, useAppSelector } from "../../../store/store"
-import { setIsMarkingMode, setMarkColor } from "../../../store/Calendar/action"
+import { setIsMarkingMode} from "../../../store/Calendar/action"
 import { Icon } from "../../../components"
 
 
@@ -78,9 +78,7 @@ const $value: TextStyle = {
 
 const $container: ViewStyle = {
   width: "100%"
-
 }
-
 
 const $mode: ViewStyle = {
   flexDirection: "row",

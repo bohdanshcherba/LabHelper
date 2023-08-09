@@ -1,6 +1,7 @@
 package com.labhelper;
 
-import android.annotation.SuppressLint;
+
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -12,16 +13,14 @@ import android.net.Uri;
 
 import android.os.Build;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import androidx.annotation.RequiresApi;
-
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import java.util.Calendar;
+
 
 /**
  * Implementation of App Widget functionality.
@@ -30,6 +29,7 @@ public class Widget extends AppWidgetProvider {
     static DateManager dm = new DateManager();
     private final static String PREV_MOON_CLICKED = "PREV_MOON_CLICKED";
     private final static String NEXT_MOON_CLICKED = "NEXT_MOON_CLICKED";
+    private final static String DAY_SWITCH = "DAY_SWITCH";
     private ReactApplicationContext reactContext;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
@@ -103,13 +103,29 @@ public class Widget extends AppWidgetProvider {
             views.setRemoteAdapter(R.id.grid_view, intent);
 
             AppWidgetManager.getInstance(context).updateAppWidget(componentName, views);
+        } else if (MyIntent.getAction().equals(DAY_SWITCH)) {
+            Log.d("WIDGET", "UPDATE");
+            Intent intent = new Intent(context, MyWidgetRemoteViewsService.class);
+
+            SharedPreferences sharedPref = context.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+            String appString = sharedPref.getString("appData", "{\"text\":'no data'}");
+
+            Bundle extras = new Bundle();
+            extras.putString("days", dm.getDaysInMonth().toString());
+            extras.putString("marked", appString);
+            intent.putExtras(extras);
+
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            views.setRemoteAdapter(R.id.grid_view, intent);
+
+            AppWidgetManager.getInstance(context).updateAppWidget(componentName, views);
         }
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-
+        scheduleUpdate(context);
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
@@ -161,6 +177,33 @@ public class Widget extends AppWidgetProvider {
 
     }
 
+    private void scheduleUpdate(Context context) {
+        Intent intent = new Intent(context, Widget.class);
+        intent.setAction(DAY_SWITCH);
+
+        int pendingFlags;
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        } else {
+            pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, pendingFlags);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        long interval = 1 * 60 * 1000; // set the interval to 6 hour
+        // Set the alarm to start at midnight
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 30);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+// Repeat the alarm every day
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created

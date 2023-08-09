@@ -84,6 +84,14 @@ export const GorayevCounterScreen = ({ navigation, route }) => {
     setValue(value *5)
 
   }
+ const division = () => {
+
+
+    setValue(Math.floor(value /2))
+
+  }
+
+
 
 
   return (
@@ -129,6 +137,9 @@ export const GorayevCounterScreen = ({ navigation, route }) => {
       <TouchableOpacity style={$btnMultiply} onPress={multiply}>
         <Text style={{ color: "black" }}>x 5</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={[$btnMultiply, $btnDilenya]} onPress={division}>
+        <Text style={{ color: "black" }}>/ 2</Text>
+      </TouchableOpacity>
       <TouchableWithoutFeedback onPress={increment} disabled={isEdit}>
         <View style={$counterContainer}>
           <Text style={$ModalText}>{value}</Text>
@@ -150,6 +161,13 @@ const $btnMultiply: ViewStyle = {
   alignItems:'center',
   justifyContent:'center'
 }
+
+const $btnDilenya: ViewStyle = {
+
+  top: 110,
+
+}
+
 const $header: ViewStyle = {
   position: "absolute",
   width: "100%",

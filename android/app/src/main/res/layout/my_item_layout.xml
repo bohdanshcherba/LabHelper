@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textAlignment="textEnd"
-        android:height="29dp"
+        android:height="25dp"
         android:paddingEnd="5dp"
         android:text="1"
         android:textSize="15sp"
@@ -28,7 +28,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/bordered_bg"
         android:paddingEnd="5dp"
-        android:height="30dp"
+        android:height="25dp"
 
         android:text="1"
         android:textAlignment="textEnd"
